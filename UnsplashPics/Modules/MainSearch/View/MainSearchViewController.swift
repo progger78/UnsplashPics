@@ -7,7 +7,11 @@
 
 import UIKit
 
-class SearchViewController: UIViewController {
+protocol SearchViewControllerProtocol: AnyObject {
+    func didUpdateUI(with: [UnsplashPhoto])
+}
+
+class MainSearchViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
