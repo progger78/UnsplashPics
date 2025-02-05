@@ -19,6 +19,7 @@
 		63CFD60D2D538ED4004A497F /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63CFD60C2D538ED4004A497F /* NetworkService.swift */; };
 		63CFD6112D538FEE004A497F /* HTTPDataDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63CFD6102D538FEE004A497F /* HTTPDataDownloader.swift */; };
 		63CFD6132D53997B004A497F /* MainSearchPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63CFD6122D53997B004A497F /* MainSearchPresenter.swift */; };
+		63CFD6182D53A6F3004A497F /* SearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63CFD6172D53A6F3004A497F /* SearchResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		63CFD60C2D538ED4004A497F /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		63CFD6102D538FEE004A497F /* HTTPDataDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPDataDownloader.swift; sourceTree = "<group>"; };
 		63CFD6122D53997B004A497F /* MainSearchPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSearchPresenter.swift; sourceTree = "<group>"; };
+		63CFD6172D53A6F3004A497F /* SearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,7 +170,7 @@
 		63CFD60B2D538EC3004A497F /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				63CFD60C2D538ED4004A497F /* NetworkService.swift */,
+				63CFD6142D53A583004A497F /* NetworkClient */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -187,6 +189,15 @@
 				63CFD6102D538FEE004A497F /* HTTPDataDownloader.swift */,
 			);
 			path = API;
+			sourceTree = "<group>";
+		};
+		63CFD6142D53A583004A497F /* NetworkClient */ = {
+			isa = PBXGroup;
+			children = (
+				63CFD60C2D538ED4004A497F /* NetworkService.swift */,
+				63CFD6172D53A6F3004A497F /* SearchResponse.swift */,
+			);
+			path = NetworkClient;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -265,6 +276,7 @@
 				63CFD6022D5364ED004A497F /* AppColors.swift in Sources */,
 				63CFD6062D536508004A497F /* AppError.swift in Sources */,
 				63CFD60A2D5385CE004A497F /* Picture.swift in Sources */,
+				63CFD6182D53A6F3004A497F /* SearchResponse.swift in Sources */,
 				63CFD5E52D535D98004A497F /* AppDelegate.swift in Sources */,
 				63CFD6132D53997B004A497F /* MainSearchPresenter.swift in Sources */,
 				63CFD6112D538FEE004A497F /* HTTPDataDownloader.swift in Sources */,

@@ -15,12 +15,12 @@ protocol HTTPDataDownloader {
 
 extension HTTPDataDownloader {
     func fetchData<T: Decodable>(as type: T.Type, request: URLRequest) async throws -> T {
+        let (data, response) = try await URLSession.shared.data(for: request)
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
             guard let response = response as? HTTPURLResponse else {
                 throw NetworkError.badServiceResponse(response: response.description)
             }
+            
             guard (200...299).contains(response.statusCode) else {
                 throw NetworkError.invalidStatusCode(statusCode: response.statusCode)
             }

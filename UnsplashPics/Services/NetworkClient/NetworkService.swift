@@ -8,11 +8,11 @@
 import Foundation
 
 fileprivate enum AccessKey: String {
-    case unsplash = "eBW5tID8fSCIEp_8Tbk2-IeIKeH2AuVVVmv3_B38h8g"
+    case unsplash = "E1QH66FDUtJadMoLHMiNJiF1slF9ES_3pCipuYNA23M"
 }
 
 protocol NetworkService {
-    func searchPhotos(for query: String, page: Int) async throws -> [UnsplashPhoto]?
+    func searchPhotos(for query: String, page: Int) async throws -> SearchResponse?
 }
 
 final class NetworkServiceImpl: NetworkService, HTTPDataDownloader {
@@ -25,11 +25,11 @@ final class NetworkServiceImpl: NetworkService, HTTPDataDownloader {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
     
-    func searchPhotos(for query: String, page: Int) async throws -> [UnsplashPhoto]? {
+    func searchPhotos(for query: String, page: Int) async throws -> SearchResponse? {
         guard let request = createRequest(for: query, page: page) else { return nil }
         
         do {
-            let photos = try await fetchData(as: [UnsplashPhoto].self, request: request)
+            let photos = try await fetchData(as: SearchResponse.self, request: request)
             return photos
         } catch let error as NetworkError {
             throw error
@@ -41,6 +41,7 @@ final class NetworkServiceImpl: NetworkService, HTTPDataDownloader {
     private func prepareHeader() -> [String: String]? {
         var headers = [String: String]()
         headers["Authorization"] = "Client-ID \(AccessKey.unsplash.rawValue)"
+        headers["Accept-Encoding"] = "gzip, deflate, identity"
         return headers
     }
     
@@ -62,7 +63,7 @@ final class NetworkServiceImpl: NetworkService, HTTPDataDownloader {
     }
     
     private func createRequest(for searchTerm: String,
-                       page: Int) -> URLRequest? {
+                               page: Int) -> URLRequest? {
         let paramaters = prepareParaments(searchTerm: searchTerm, page: page)
         guard let url = createUrl(with: paramaters) else { return nil }
         print(url.absoluteString)

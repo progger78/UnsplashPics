@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "4CE79F6E-6AA3-4E62-980C-AB7A58818DFF"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A88C2815-01A0-4AF3-8633-06049D571615"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UnsplashPics/Services/NetworkService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
+            landmarkName = "searchPhotos(for:page:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A88C2815-01A0-4AF3-8633-06049D571615 - 47e452234204d995"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for UnsplashPics.NetworkServiceImpl.searchPhotos(for: Swift.String, page: Swift.Int) async throws -&gt; Swift.Optional&lt;Swift.Array&lt;UnsplashPics.Photo&gt;&gt;"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Services/NetworkService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "32"
+                  endingLineNumber = "32">
+               </Location>
+               <Location
+                  uuid = "A88C2815-01A0-4AF3-8633-06049D571615 - 6591d45a75439a28"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for UnsplashPics.NetworkServiceImpl.searchPhotos(for: Swift.String, page: Swift.Int) async throws -&gt; Swift.Optional&lt;Swift.Array&lt;UnsplashPics.Photo&gt;&gt;"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Services/NetworkService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "29"
+                  endingLineNumber = "29">
+               </Location>
+               <Location
+                  uuid = "A88C2815-01A0-4AF3-8633-06049D571615 - 6591d45a75439a57"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for UnsplashPics.NetworkServiceImpl.searchPhotos(for: Swift.String, page: Swift.Int) async throws -&gt; Swift.Optional&lt;Swift.Array&lt;UnsplashPics.Photo&gt;&gt;"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Services/NetworkService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "32"
+                  endingLineNumber = "32">
+               </Location>
+               <Location
+                  uuid = "A88C2815-01A0-4AF3-8633-06049D571615 - 90413503afdb95e8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for UnsplashPics.NetworkServiceImpl.searchPhotos(for: Swift.String, page: Swift.Int) async throws -&gt; Swift.Optional&lt;Swift.Array&lt;UnsplashPics.Photo&gt;&gt;"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Services/NetworkService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "29"
+                  endingLineNumber = "29">
+               </Location>
+               <Location
+                  uuid = "A88C2815-01A0-4AF3-8633-06049D571615 - 90413503afdb9597"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for UnsplashPics.NetworkServiceImpl.searchPhotos(for: Swift.String, page: Swift.Int) async throws -&gt; Swift.Optional&lt;Swift.Array&lt;UnsplashPics.Photo&gt;&gt;"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Services/NetworkService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "32"
+                  endingLineNumber = "32">
+               </Location>
+               <Location
+                  uuid = "A88C2815-01A0-4AF3-8633-06049D571615 - b693a69059cef3f7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for UnsplashPics.NetworkServiceImpl.searchPhotos(for: Swift.String, page: Swift.Int) async throws -&gt; Swift.Optional&lt;Swift.Array&lt;UnsplashPics.Photo&gt;&gt;"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Services/NetworkService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "29"
+                  endingLineNumber = "29">
+               </Location>
+               <Location
+                  uuid = "A88C2815-01A0-4AF3-8633-06049D571615 - b693a69059cef388"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for UnsplashPics.NetworkServiceImpl.searchPhotos(for: Swift.String, page: Swift.Int) async throws -&gt; Swift.Optional&lt;Swift.Array&lt;UnsplashPics.Photo&gt;&gt;"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Services/NetworkService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "32"
+                  endingLineNumber = "32">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C3FCB376-1235-4492-9F14-252342E88D81"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UnsplashPics/Services/NetworkService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "searchPhotos(for:page:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C899411C-7A57-4E2F-9F06-00493E432BC3"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UnsplashPics/Shared/API/HTTPDataDownloader.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "27"
+            endingLineNumber = "27"
+            landmarkName = "fetchData(as:request:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5D290E81-3652-4EA1-94BB-3277719D2AA8"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UnsplashPics/Shared/API/HTTPDataDownloader.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "18"
+            endingLineNumber = "18"
+            landmarkName = "fetchData(as:request:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "5D290E81-3652-4EA1-94BB-3277719D2AA8 - a99b5fc1d5390fbd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for UnsplashPics.HTTPDataDownloader.fetchData&lt;&#x3c4;_0_0 where &#x3c4;_1_0: Swift.Decodable&gt;(as: &#x3c4;_1_0.Type, request: Foundation.URLRequest) async throws -&gt; &#x3c4;_1_0"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Shared/API/HTTPDataDownloader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "18"
+                  endingLineNumber = "18">
+               </Location>
+               <Location
+                  uuid = "5D290E81-3652-4EA1-94BB-3277719D2AA8 - b841906db2601bb7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for UnsplashPics.HTTPDataDownloader.fetchData&lt;&#x3c4;_0_0 where &#x3c4;_1_0: Swift.Decodable&gt;(as: &#x3c4;_1_0.Type, request: Foundation.URLRequest) async throws -&gt; &#x3c4;_1_0"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Shared/API/HTTPDataDownloader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "18"
+                  endingLineNumber = "18">
+               </Location>
+               <Location
+                  uuid = "5D290E81-3652-4EA1-94BB-3277719D2AA8 - eabd6dc27ee3cbbf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for UnsplashPics.HTTPDataDownloader.fetchData&lt;&#x3c4;_0_0 where &#x3c4;_1_0: Swift.Decodable&gt;(as: &#x3c4;_1_0.Type, request: Foundation.URLRequest) async throws -&gt; &#x3c4;_1_0"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Shared/API/HTTPDataDownloader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "18"
+                  endingLineNumber = "18">
+               </Location>
+               <Location
+                  uuid = "5D290E81-3652-4EA1-94BB-3277719D2AA8 - 8c3084cc35ff69be"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for UnsplashPics.HTTPDataDownloader.fetchData&lt;&#x3c4;_0_0 where &#x3c4;_1_0: Swift.Decodable&gt;(as: &#x3c4;_1_0.Type, request: Foundation.URLRequest) async throws -&gt; &#x3c4;_1_0"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Shared/API/HTTPDataDownloader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "18"
+                  endingLineNumber = "18">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

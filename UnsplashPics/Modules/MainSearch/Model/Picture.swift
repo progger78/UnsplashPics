@@ -7,11 +7,6 @@
 
 import Foundation
 
-struct Photo: Decodable {
-    let total: Int
-    let results: [UnsplashPhoto]
-}
-
 struct UnsplashPhoto: Decodable {
     let id: String
     let createdAt: String
@@ -30,3 +25,4 @@ struct UnsplashPhoto: Decodable {
         let thumb: String
     }
 }
+
