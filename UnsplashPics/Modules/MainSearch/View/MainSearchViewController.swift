@@ -12,7 +12,7 @@ protocol MainSearchViewControllerProtocol: AnyObject {
     func showError(with errorMessage: String)
 }
 
-class MainSearchViewController: UIViewController {
+final class MainSearchViewController: UIViewController {
     
     let presenter: MainSearchPresenterProtocol!
     let mainView = MainSearchView()
@@ -52,12 +52,7 @@ private extension MainSearchViewController {
     
     func configureConstraints() {
         mainView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            mainView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mainView.topAnchor.constraint(equalTo: view.topAnchor),
-            mainView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            mainView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
+        mainView.equalToSuperview(view: view)
     }
 }
 

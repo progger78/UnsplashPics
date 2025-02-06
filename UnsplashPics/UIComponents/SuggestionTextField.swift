@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SuggestionTextField: UITextField{
+class SuggestionTextField: UITextField {
     
     private let tableView = UITableView()
     private var suggestions: [String] = []

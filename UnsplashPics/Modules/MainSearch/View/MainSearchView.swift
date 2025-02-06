@@ -24,9 +24,9 @@ final class MainSearchView: UIView {
     
     lazy var collectionView: UICollectionView = setupCollectionView()
     lazy var dataSource: UICollectionViewDiffableDataSource<Section, UnsplashPhoto> = setupDataSource()
-    let spacing: CGFloat = 10
+    private let spacing: CGFloat = 10
     
-    func setupCollectionView() -> UICollectionView {
+    private func setupCollectionView() -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = spacing
         layout.minimumLineSpacing = spacing
@@ -34,17 +34,30 @@ final class MainSearchView: UIView {
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "collectionCell")
+        collectionView.register(MainSearchCollectionViewCell.self,
+                                forCellWithReuseIdentifier: MainSearchCollectionViewCell.reuseId)
         collectionView.delegate = self
         return collectionView
     }
     
     private func setupDataSource() -> UICollectionViewDiffableDataSource<Section, UnsplashPhoto> {
-        return UICollectionViewDiffableDataSource<Section, UnsplashPhoto>(collectionView: collectionView) { collectionView, indexPath, photo in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionCell", for: indexPath)
-            cell.backgroundColor = .green
-            return cell
+        return UICollectionViewDiffableDataSource<Section, UnsplashPhoto>(collectionView: collectionView) { 
+            collectionView,
+            indexPath,
+            photo in
+            return self.createCell(for: collectionView, indexPath: indexPath, with: photo)
         }
+    }
+    
+    private func createCell(for collectionView: UICollectionView, 
+                            indexPath: IndexPath,
+                            with photo: UnsplashPhoto) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainSearchCollectionViewCell.reuseId,
+                                                      for: indexPath) as? MainSearchCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        cell.configure(with: photo)
+        return cell
     }
     
     func update(with photos: [UnsplashPhoto]) {
@@ -72,18 +85,15 @@ private extension MainSearchView {
     }
     
     func configureConstraints() {
-        NSLayoutConstraint.activate([
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
+        collectionView.equalToSuperview(view: self)
     }
 }
 
 
 extension MainSearchView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, 
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemsPerRow: CGFloat = 2
         let sectionInsets: CGFloat = 10 * 2
         
@@ -91,7 +101,6 @@ extension MainSearchView: UICollectionViewDelegateFlowLayout {
         let availableWidth = collectionView.bounds.width - totalSpacing
         let itemWidth = availableWidth / itemsPerRow
         
-        return CGSize(width: itemWidth, height: 160)
-        
+        return CGSize(width: itemWidth, height: 200)
     }
 }
