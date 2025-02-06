@@ -7,19 +7,21 @@
 
 import UIKit
 
-protocol SearchViewControllerProtocol: AnyObject {
-    func didUpdateUI(with: [UnsplashPhoto])
+protocol MainSearchViewControllerProtocol: AnyObject {
+    func didUpdateUI(with photos: [UnsplashPhoto])
     func showError(with errorMessage: String)
 }
 
 class MainSearchViewController: UIViewController {
-
+    
     let presenter: MainSearchPresenterProtocol!
+    let mainView = MainSearchView()
     
     init() {
         let networkService = NetworkServiceImpl()
         self.presenter = MainSearchPresenterImpl(networkService: networkService)
         super.init(nibName: nil, bundle: nil)
+        self.presenter.view = self
     }
     
     required init?(coder: NSCoder) {
@@ -28,8 +30,43 @@ class MainSearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        initialize()
         Task { await presenter.searchPhotos(for: "Blue")}
     }
 }
 
+private extension MainSearchViewController {
+    func initialize() {
+        configureView()
+        embedViews()
+        configureConstraints()
+    }
+    
+    func configureView() {
+        view.backgroundColor = .systemBackground
+    }
+    
+    func embedViews() {
+        view.addSubview(mainView)
+    }
+    
+    func configureConstraints() {
+        mainView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            mainView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            mainView.topAnchor.constraint(equalTo: view.topAnchor),
+            mainView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            mainView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+}
+
+extension MainSearchViewController: MainSearchViewControllerProtocol {
+    func didUpdateUI(with photos: [UnsplashPhoto]) {
+        mainView.update(with: photos)
+    }
+    
+    func showError(with errorMessage: String) {
+        
+    }
+}

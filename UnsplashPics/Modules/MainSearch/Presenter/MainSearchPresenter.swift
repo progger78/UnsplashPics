@@ -7,13 +7,14 @@
 
 import Foundation
 
-protocol MainSearchPresenterProtocol {
+protocol MainSearchPresenterProtocol: AnyObject {
+    var view: MainSearchViewControllerProtocol? { get set }
     func searchPhotos(for query: String) async
 }
 
 final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
     private let networkService: NetworkService
-    private weak var view: SearchViewControllerProtocol?
+    weak var view: (any MainSearchViewControllerProtocol)?
     
     init(networkService: NetworkService) {
         self.networkService = networkService
