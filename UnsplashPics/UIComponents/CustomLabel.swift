@@ -45,11 +45,12 @@ class CustomLabel: UIView {
             label.textAlignment = .center
         case .secondary:
             label.font = .systemFont(ofSize: 18, weight: .regular)
-            label.textAlignment = .justified
+            label.textAlignment = .left
         }
     }
     private func configure() {
         addSubview(label)
+        label.turnOffTAMIC()
         label.equalToSuperview(view: self)
     }
     

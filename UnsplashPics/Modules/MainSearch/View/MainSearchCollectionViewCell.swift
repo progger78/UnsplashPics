@@ -11,6 +11,8 @@ final class MainSearchCollectionViewCell: UICollectionViewCell {
     static let reuseId = "MainSearchCollectionViewCell"
     
     let asyncImageView = AsyncImageView()
+    let descriptionLabel = CustomLabel(type: .secondary, numberOfLines: 1)
+    let createdAtLabel = CustomLabel(type: .secondary, numberOfLines: 2)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,6 +30,8 @@ final class MainSearchCollectionViewCell: UICollectionViewCell {
     
     func configure(with photo: UnsplashPhoto) {
         Task { await asyncImageView.setImage(for: photo.urls.small) }
+        descriptionLabel.set("Likes: \(photo.likes)")
+        createdAtLabel.set("Created at: \(photo.formattedDate ?? "Wrong format")")
     }
 }
 
@@ -47,11 +51,24 @@ private extension MainSearchCollectionViewCell {
     }
     
     func embedViews() {
-        contentView.addSubview(asyncImageView)
+        contentView.addSubviews(asyncImageView, descriptionLabel, createdAtLabel)
     }
     
     func configureConstraints() {
-        asyncImageView.translatesAutoresizingMaskIntoConstraints = false
-        asyncImageView.equalToSuperview(view: contentView)
+        [asyncImageView, descriptionLabel, createdAtLabel].forEach { $0.turnOffTAMIC() }
+        asyncImageView.equalToSuperview(view: contentView, hasBottomAnchor: false)
+        
+        NSLayoutConstraint.activate([
+            asyncImageView.heightAnchor.constraint(equalToConstant: 150),
+            
+            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
+            descriptionLabel.topAnchor.constraint(equalTo: asyncImageView.bottomAnchor, constant: 10),
+            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
+            
+            createdAtLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
+            createdAtLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 5),
+            createdAtLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
+        ])
     }
+
 }

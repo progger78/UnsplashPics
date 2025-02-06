@@ -28,7 +28,7 @@ class AsyncImageView: UIView {
     
     func setupImage() {
         addSubview(imageView)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.turnOffTAMIC()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.equalToSuperview(view: self)

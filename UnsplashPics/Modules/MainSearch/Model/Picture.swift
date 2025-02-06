@@ -32,5 +32,11 @@ struct UnsplashPhoto: Decodable, Hashable {
     static func ==(lhs: UnsplashPhoto, rhs: UnsplashPhoto) -> Bool {
         lhs.id == rhs.id
     }
+    
+    var formattedDate: String? {
+        guard let dateString = Date.format(dateString: createdAt) else { return nil }
+        
+        return dateString
+    }
 }
 

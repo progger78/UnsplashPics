@@ -9,6 +9,7 @@ import UIKit
 
 protocol MainSearchViewControllerProtocol: AnyObject {
     func didUpdateUI(with photos: [UnsplashPhoto])
+    func setLoading(_ isLoading: Bool)
     func showError(with errorMessage: String)
 }
 
@@ -31,7 +32,7 @@ final class MainSearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initialize()
-        Task { await presenter.searchPhotos(for: "Blue")}
+        mainView.setDelegate(self)
     }
 }
 
@@ -51,14 +52,29 @@ private extension MainSearchViewController {
     }
     
     func configureConstraints() {
-        mainView.translatesAutoresizingMaskIntoConstraints = false
+        mainView.turnOffTAMIC()
         mainView.equalToSuperview(view: view)
+    }
+}
+
+extension MainSearchViewController: SuggestionTextFieldDelegate {
+    var suggestionsHistory: [String] {
+        return presenter.suggestionHistory
+    }
+    
+    func didTapSearch(with query: String) {
+        self.presenter.addToSuggestionsHistory(query)
+        Task { await self.presenter.searchPhotos(for: query)}
     }
 }
 
 extension MainSearchViewController: MainSearchViewControllerProtocol {
     func didUpdateUI(with photos: [UnsplashPhoto]) {
         mainView.update(with: photos)
+    }
+    
+    func setLoading(_ isLoading: Bool) {
+        mainView.loadingIndicator.animate(isLoading: isLoading)
     }
     
     func showError(with errorMessage: String) {
