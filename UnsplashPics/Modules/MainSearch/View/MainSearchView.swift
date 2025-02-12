@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol MainSearchViewProtocol: AnyObject {
+    func didTapCell(in view: UIView, photo: UnsplashPhoto)
+}
+
 final class MainSearchView: UIView {
+    
+    weak var delegate: (any MainSearchViewProtocol)?
     
     enum Section {
         case main
@@ -125,7 +131,15 @@ extension MainSearchView: UICollectionViewDelegateFlowLayout {
         return CGSize(width: itemWidth, height: 250)
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let photo = dataSource.itemIdentifier(for: indexPath) {
+            delegate?.didTapCell(in: self, photo: photo)
+        }
+        collectionView.deselectItem(at: indexPath, animated: true)
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         dismissKeyboard()
     }
+    
 }

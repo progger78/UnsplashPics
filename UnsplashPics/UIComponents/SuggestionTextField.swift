@@ -10,6 +10,7 @@ import UIKit
 protocol SuggestionTextFieldDelegate: AnyObject {
     var suggestionsHistory: [String] { get }
     func didTapSearch(with query: String)
+    func didTapFilters()
 }
 
 class SuggestionTextField: UITextField {
@@ -56,7 +57,7 @@ class SuggestionTextField: UITextField {
             tableView.isHidden = true
             return
         }
-    
+        
         suggestions =  suggestionsHistory.filter({ $0.lowercased().contains(text.lowercased()) })
         tableView.isHidden = suggestions.isEmpty
         tableView.reloadData()
@@ -69,6 +70,7 @@ class SuggestionTextField: UITextField {
         returnKeyType = .search
         enablesReturnKeyAutomatically = true
         addTarget(self, action: #selector(didChangeText), for: .editingChanged)
+        addFilterButton()
         delegate = self
     }
     
@@ -98,6 +100,28 @@ class SuggestionTextField: UITextField {
                                  width: frame.width,
                                  height: min(150, CGFloat(suggestions.count * 44)))
         superview.bringSubviewToFront(tableView)
+    }
+    
+    private func addFilterButton() {
+        let filterButton = UIButton(type: .system)
+        let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .regular)
+        filterButton.setImage(UIImage(systemName: "line.3.horizontal.decrease.circle", withConfiguration: config), for: .normal)
+        filterButton.tintColor = .label
+        filterButton.imageView?.contentMode = .scaleAspectFit
+        filterButton.addTarget(self, action: #selector(didTapFilters), for: .touchUpInside)
+
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        filterButton.frame = CGRect(x: 5, y: 5, width: 40, height: 40)
+        containerView.addSubview(filterButton)
+
+        rightView?.isUserInteractionEnabled = true
+        rightView = containerView
+        rightViewMode = .always
+    }
+
+    
+    @objc private func didTapFilters() {
+        searchDelegate?.didTapFilters()
     }
 }
 

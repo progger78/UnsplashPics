@@ -15,7 +15,7 @@ protocol MainSearchViewControllerProtocol: AnyObject {
 
 final class MainSearchViewController: UIViewController {
     
-    let presenter: MainSearchPresenterProtocol!
+    let presenter: MainSearchPresenterProtocol
     let mainView = MainSearchView()
     
     init() {
@@ -33,6 +33,7 @@ final class MainSearchViewController: UIViewController {
         super.viewDidLoad()
         initialize()
         mainView.setDelegate(self)
+        mainView.delegate = self
     }
 }
 
@@ -62,12 +63,26 @@ extension MainSearchViewController: SuggestionTextFieldDelegate {
         return presenter.suggestionHistory
     }
     
+    func didTapFilters() {
+        let vc = FiltersViewController()
+        if let controller = vc.sheetPresentationController {
+            controller.prefersGrabberVisible = true
+            controller.detents = [.medium()]
+        }
+        present(vc, animated: true)
+    }
+    
     func didTapSearch(with query: String) {
-        self.presenter.addToSuggestionsHistory(query)
         Task { await self.presenter.searchPhotos(for: query)}
     }
 }
 
+extension MainSearchViewController: MainSearchViewProtocol {
+    func didTapCell(in view: UIView, photo: UnsplashPhoto) {
+        let vc = DetailInfoViewController(photo: photo)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+}
 extension MainSearchViewController: MainSearchViewControllerProtocol {
     func didUpdateUI(with photos: [UnsplashPhoto]) {
         mainView.update(with: photos)

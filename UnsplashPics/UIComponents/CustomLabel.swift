@@ -54,7 +54,7 @@ class CustomLabel: UIView {
         label.equalToSuperview(view: self)
     }
     
-    func set(_ text: String) {
+    func set(_ text: String?) {
         label.text = text
     }
 }

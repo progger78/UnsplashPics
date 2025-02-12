@@ -31,8 +31,11 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
     
     @MainActor
     func searchPhotos(for query: String) async {
-           view?.setLoading(true)
-           defer { view?.setLoading(false) }
+        guard query != suggestionHistory.last else  { return }
+        
+        addToSuggestionsHistory(query)
+        view?.setLoading(true)
+        defer { view?.setLoading(false) }
         
         do {
             guard let photos = try await networkService.searchPhotos(for: query, page: 1) else { return }
