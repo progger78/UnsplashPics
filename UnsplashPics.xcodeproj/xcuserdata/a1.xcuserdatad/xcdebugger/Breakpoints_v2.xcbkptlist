@@ -39,22 +39,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C899411C-7A57-4E2F-9F06-00493E432BC3"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "UnsplashPics/Shared/API/HTTPDataDownloader.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "27"
-            endingLineNumber = "27"
-            landmarkName = "fetchData(as:request:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "5D290E81-3652-4EA1-94BB-3277719D2AA8"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -71,16 +55,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9752B869-E8ED-4D45-9F94-46C8FA525C23"
+            uuid = "46ADC6DA-F01D-462B-8066-2DF179746777"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UnsplashPics/Modules/MainSearch/Presenter/MainSearchPresenter.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
-            landmarkName = "searchPhotos(for:)"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "fetchInitialPhotos()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

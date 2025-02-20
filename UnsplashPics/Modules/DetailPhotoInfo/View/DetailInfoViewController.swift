@@ -7,14 +7,26 @@
 
 import UIKit
 
+protocol DetailInfoControllerProtocol: AnyObject {
+    func showInfo(for photo: DetailPhoto)
+}
 
 class DetailInfoViewController: UIViewController {
     
-    let photo: UnsplashPhoto
+    var presenter: DetailInfoPresenterProtocol
+    let detailView = DetailInfoView()
     
-    init(photo: UnsplashPhoto) {
-        self.photo = photo
+    init(photoId: String) {
+        let networkService = NetworkServiceImpl()
+        self.presenter = DetailInfoPresenterImp(networkService: networkService, photoId: photoId)
         super.init(nibName: nil, bundle: nil)
+        presenter.view = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter.checkFavStatus()
+        detailView.isFavorite = presenter.isFavorite
     }
     
     required init?(coder: NSCoder) {
@@ -22,6 +34,64 @@ class DetailInfoViewController: UIViewController {
     }
     
     override func viewDidLoad() {
-        view.backgroundColor = .systemBackground
+        initialize()
+        Task { await presenter.loadDetailPhotoInfo() }
+        detailView.delegate = self
+    }
+}
+
+extension DetailInfoViewController: DetailInfoControllerProtocol {
+    func showInfo(for photo: DetailPhoto) {
+        detailView.configure(with: photo)
+    }
+}
+
+extension DetailInfoViewController: DetailInfoViewDelegate {
+    func didTapContainer(with user: User) {
+        let vc = UserProfileViewController(user: user)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func didTapFavoriteButton(for photo: DetailPhoto) {
+        if presenter.isFavorite {
+            presenter.deleteFromFavorites(photo: photo)
+        } else {
+            presenter.addToFavorites(photo: photo)
+        }
+        detailView.isFavorite = presenter.isFavorite
+        detailView.updateFavoriteButtonTitle()
+    }
+    
+    func showSnackbar(message: String) {
+        presentSnackBar(message: message, in: view, type: .success)
+    }
+    
+    func didTapShare(_ photo: DetailPhoto) {
+        Task {
+            if let image = await ImageLoader.shared.fetchImage(for: photo.urls.full) {
+                let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+                present(activityController, animated: true)
+            } else {
+                print("Failed to send")
+            }
+        }
+    }
+}
+
+private extension DetailInfoViewController {
+    func initialize() {
+        embedViews()
+        configureConstraints()
+        detailView.configureView(with: navigationItem)
+    }
+    
+    func embedViews() {
+        view.addSubview(detailView)
+    }
+    
+    func configureConstraints() {
+        detailView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 }

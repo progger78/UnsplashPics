@@ -8,14 +8,19 @@
 import UIKit
 
 
-class FilterBadge: UIView {
+final class FilterBadge: UIView {
     
     private let titleLabel = CustomLabel(type: .secondary, numberOfLines: 1)
     
-    private let mainColor: UIColor
+    var mainColor: UIColor?
     
-    init(mainColor: UIColor) {
-        self.mainColor = mainColor
+    var borderColor: UIColor = .systemGray {
+        didSet {
+            layer.borderColor = borderColor.cgColor
+        }
+    }
+    
+    init() {
         super.init(frame: .zero)
         initialize()
     }
@@ -41,7 +46,7 @@ private extension FilterBadge {
     func configureView() {
         layer.cornerRadius = 16
         layer.masksToBounds = true
-        layer.borderColor = UIColor.systemGray.cgColor
+        layer.borderColor = borderColor.cgColor
         layer.borderWidth = 1
     }
     

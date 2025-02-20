@@ -8,7 +8,8 @@
 import UIKit
 
 protocol MainSearchViewControllerProtocol: AnyObject {
-    func didUpdateUI(with photos: [UnsplashPhoto])
+    func appendInitialPhotos(photos: [UnsplashPhoto])
+    func appendNewPhotos(photos: [UnsplashPhoto])
     func setLoading(_ isLoading: Bool)
     func showError(with errorMessage: String)
 }
@@ -34,6 +35,8 @@ final class MainSearchViewController: UIViewController {
         initialize()
         mainView.setDelegate(self)
         mainView.delegate = self
+        Task { await presenter.fetchInitialPhotos() }
+        mainView.configureNavBar(with: navigationItem)
     }
 }
 
@@ -65,6 +68,7 @@ extension MainSearchViewController: SuggestionTextFieldDelegate {
     
     func didTapFilters() {
         let vc = FiltersViewController()
+        vc.delegate = self
         if let controller = vc.sheetPresentationController {
             controller.prefersGrabberVisible = true
             controller.detents = [.medium()]
@@ -73,26 +77,41 @@ extension MainSearchViewController: SuggestionTextFieldDelegate {
     }
     
     func didTapSearch(with query: String) {
-        Task { await self.presenter.searchPhotos(for: query)}
+        Task { await self.presenter.searchPhotos(with: query, filters: nil) }
     }
 }
 
 extension MainSearchViewController: MainSearchViewProtocol {
     func didTapCell(in view: UIView, photo: UnsplashPhoto) {
-        let vc = DetailInfoViewController(photo: photo)
+        let vc = DetailInfoViewController(photoId: photo.id)
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func loadMorePhotos() {
+        Task { await presenter.fetchMorePhotos() }
     }
 }
 extension MainSearchViewController: MainSearchViewControllerProtocol {
-    func didUpdateUI(with photos: [UnsplashPhoto]) {
+    func appendInitialPhotos(photos: [UnsplashPhoto]) {
         mainView.update(with: photos)
     }
     
+    func appendNewPhotos(photos: [UnsplashPhoto]) {
+        mainView.appendPhotos(photos)
+    }
+    
     func setLoading(_ isLoading: Bool) {
-        mainView.loadingIndicator.animate(isLoading: isLoading)
+        mainView.isLoading = isLoading
     }
     
     func showError(with errorMessage: String) {
         
+    }
+}
+
+extension MainSearchViewController: FiltersViewControllerProtocol {
+    func didSelectOptions(_ options: [FilterModel.Section : URLQueryItem]) {
+        let filters = Array(options.values)
+        Task { await presenter.searchPhotos(with: "", filters: filters) }
     }
 }

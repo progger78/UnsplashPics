@@ -9,6 +9,7 @@ import Foundation
 
 
 enum NetworkError: Error {
+    case invalidUrl
     case failedParsingData
     case invalidData
     case failedCreatingRequest
@@ -19,6 +20,8 @@ enum NetworkError: Error {
     
     var description: String {
         switch self {
+        case .invalidUrl:
+            return "Bad url"
         case .failedParsingData:
             return "Couldn't parse data"
         case .invalidData:
@@ -34,6 +37,37 @@ enum NetworkError: Error {
         case let .unknownError(error):
             return "Error: \(error.localizedDescription)"
             
+        }
+    }
+}
+
+enum ImageSaveError: Error {
+    case permissionDenied
+    case restricted
+    case failedToLoadImage
+    case unknown
+    
+    var description: String {
+        switch self {
+        case .permissionDenied:
+            return "Доступ к фото запрещён. Разрешите доступ в настройках."
+        case .restricted:
+            return "Функция сохранения ограничена системными настройками."
+        case .failedToLoadImage:
+            return "Не удалось загрузить изображение."
+        case .unknown:
+            return "Произошла неизвестная ошибка."
+        }
+    }
+}
+
+enum PersistanceError: Error {
+    case alreadyInFavorites
+    
+    var description: String {
+        switch self {
+        case .alreadyInFavorites:
+            "Фото уже в избранноем"
         }
     }
 }

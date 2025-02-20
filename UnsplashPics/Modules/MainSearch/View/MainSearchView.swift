@@ -9,6 +9,7 @@ import UIKit
 
 protocol MainSearchViewProtocol: AnyObject {
     func didTapCell(in view: UIView, photo: UnsplashPhoto)
+    func loadMorePhotos()
 }
 
 final class MainSearchView: UIView {
@@ -19,12 +20,27 @@ final class MainSearchView: UIView {
         case main
     }
     
-    let loadingIndicator = LoadingIndicator()
+    enum ItemSize {
+        case big
+        case small
+    }
+    
+    private let customCollectionView = ReusableCollectionView(state: .loading)
+    private let loadingIndicator = LoadingIndicator()
     private let suggestionTextField = SuggestionTextField()
+    private let menu = CustomMenu()
+    
+    var isLoading = false {
+        didSet {
+            loadingIndicator.animate(isLoading: isLoading)
+        }
+    }
     private let spacing: CGFloat = 10
     private lazy var collectionView: UICollectionView = setupCollectionView()
+    private lazy var paginationHandler = PaginationHandler { self.fetchMorePhotos() }
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, UnsplashPhoto> = setupDataSource()
-  
+    private var itemSize: ItemSize = .small
+    
     init() {
         super.init(frame: .zero)
         initialize()
@@ -33,7 +49,7 @@ final class MainSearchView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-  
+    
     private func setupCollectionView() -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = spacing
@@ -46,9 +62,9 @@ final class MainSearchView: UIView {
         collectionView.delegate = self
         return collectionView
     }
-
+    
     private func setupDataSource() -> UICollectionViewDiffableDataSource<Section, UnsplashPhoto> {
-        return UICollectionViewDiffableDataSource<Section, UnsplashPhoto>(collectionView: collectionView) { 
+        return UICollectionViewDiffableDataSource<Section, UnsplashPhoto>(collectionView: collectionView) {
             collectionView,
             indexPath,
             photo in
@@ -56,19 +72,34 @@ final class MainSearchView: UIView {
         }
     }
     
-    private func createCell(for collectionView: UICollectionView, 
+    private func createCell(for collectionView: UICollectionView,
                             indexPath: IndexPath,
                             with photo: UnsplashPhoto) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainSearchCollectionViewCell.reuseId,
-                                                      for: indexPath) as? MainSearchCollectionViewCell else {
+                                                            for: indexPath) as? MainSearchCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.configure(with: photo)
+        let photoHeight: CGFloat = (itemSize == .big) ? 250 : 150
+        cell.configure(with: photo, photoHeight: photoHeight)
         return cell
     }
     
     private func dismissKeyboard() {
         endEditing(true)
+    }
+    
+    func fetchMorePhotos() {
+        delegate?.loadMorePhotos()
+    }
+    
+    func appendPhotos(_ newPhotos: [UnsplashPhoto]) {
+        var snapshot = dataSource.snapshot()
+        
+        let uniquePhotos = newPhotos.filter { !snapshot.itemIdentifiers.contains($0) }
+        guard !uniquePhotos.isEmpty else { return }
+        
+        snapshot.appendItems(newPhotos, toSection: .main)
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     func update(with photos: [UnsplashPhoto]) {
@@ -80,6 +111,10 @@ final class MainSearchView: UIView {
     
     func setDelegate(_ delegate: SuggestionTextFieldDelegate) {
         suggestionTextField.searchDelegate = delegate
+    }
+    
+    func configureNavBar(with navItem: UINavigationItem) {
+        navItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: setupMenu())
     }
 }
 
@@ -100,35 +135,62 @@ private extension MainSearchView {
     }
     
     func configureConstraints() {
-        [collectionView, suggestionTextField, loadingIndicator].forEach { $0.turnOffTAMIC() }
-        collectionView.equalToSuperview(view: self, hasTopAnchor: false)
+        collectionView.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalToSuperview()
+            make.top.equalTo(suggestionTextField.snp.bottom).offset(10)
+        }
         
-        NSLayoutConstraint.activate([
-            suggestionTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            suggestionTextField.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 5),
-            suggestionTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            suggestionTextField.heightAnchor.constraint(equalToConstant: 50),
-            
-            loadingIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
-            loadingIndicator.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
-            collectionView.topAnchor.constraint(equalTo: suggestionTextField.bottomAnchor, constant: 10)
-        ])
+        suggestionTextField.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview().inset(10)
+            make.top.equalTo(safeAreaLayoutGuide).offset(5)
+            make.height.equalTo(50)
+        }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+    }
+    
+    func setupMenu() -> UIMenu {
+        menu.onOrderChangeTap = { self.toggleItemSize() }
+        return menu.createMenu()
+    }
+    
+    
+    func toggleItemSize() {
+        itemSize = (itemSize == .small) ? .big : .small
+        collectionView.reloadData()
     }
 }
+//
+//extension MainSearchView: ReusableCollectionViewDelegate {
+//    func didTapCell(with photo: UnsplashPhoto) {
+//        delegate?.didTapCell(in: self, photo: photo)
+//    }
+//}
 
 extension MainSearchView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, 
+    func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let itemsPerRow: CGFloat = 2
+        var itemsPerRow: CGFloat
+        var height: CGFloat
+        
+        switch itemSize {
+        case .small:
+            itemsPerRow = 2
+            height = 250
+        case .big:
+            itemsPerRow = 1
+            height = 350
+        }
         let sectionInsets: CGFloat = 10 * 2
         
         let totalSpacing = spacing * (itemsPerRow - 1) + sectionInsets
         let availableWidth = collectionView.bounds.width - totalSpacing
         let itemWidth = availableWidth / itemsPerRow
         
-        return CGSize(width: itemWidth, height: 250)
+        return CGSize(width: itemWidth, height: height)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -140,6 +202,8 @@ extension MainSearchView: UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         dismissKeyboard()
+        
+        paginationHandler.handleScroll(for: scrollView, isLoading: isLoading, hasMore: true)
     }
     
 }

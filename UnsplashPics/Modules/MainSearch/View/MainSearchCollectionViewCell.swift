@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class MainSearchCollectionViewCell: UICollectionViewCell {
     static let reuseId = "MainSearchCollectionViewCell"
@@ -13,6 +14,7 @@ final class MainSearchCollectionViewCell: UICollectionViewCell {
     let asyncImageView = AsyncImageView()
     let descriptionLabel = CustomLabel(type: .secondary, numberOfLines: 1)
     let createdAtLabel = CustomLabel(type: .secondary, numberOfLines: 2)
+    private(set) var heightConstraint: Constraint?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,13 +27,16 @@ final class MainSearchCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        asyncImageView.image = nil 
+        asyncImageView.image = nil
     }
     
-    func configure(with photo: UnsplashPhoto) {
+    func configure(with photo: UnsplashPhoto, photoHeight: CGFloat) {
         Task { await asyncImageView.setImage(for: photo.urls.small) }
         descriptionLabel.set("Likes: \(photo.likes)")
         createdAtLabel.set("Created at: \(photo.formattedDate ?? "Wrong format")")
+        
+        heightConstraint?.update(offset: photoHeight)
+        layoutIfNeeded()
     }
 }
 
@@ -55,20 +60,19 @@ private extension MainSearchCollectionViewCell {
     }
     
     func configureConstraints() {
-        [asyncImageView, descriptionLabel, createdAtLabel].forEach { $0.turnOffTAMIC() }
-        asyncImageView.equalToSuperview(view: contentView, hasBottomAnchor: false)
+        asyncImageView.snp.makeConstraints { make in
+            make.leading.top.trailing.equalToSuperview()
+            heightConstraint = make.height.equalTo(150).constraint
+        }
         
-        NSLayoutConstraint.activate([
-            asyncImageView.heightAnchor.constraint(equalToConstant: 150),
-            
-            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
-            descriptionLabel.topAnchor.constraint(equalTo: asyncImageView.bottomAnchor, constant: 10),
-            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
-            
-            createdAtLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
-            createdAtLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 5),
-            createdAtLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
-        ])
+        descriptionLabel.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview().inset(5)
+            make.top.equalTo(asyncImageView.snp.bottom).offset(10)
+        }
+        
+        createdAtLabel.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview().inset(5)
+            make.top.equalTo(descriptionLabel.snp.bottom).offset(5)
+        }
     }
-
 }

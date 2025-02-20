@@ -11,8 +11,10 @@ class AsyncImageView: UIView {
 
     private let imageView = UIImageView()
     private let imageLoader = ImageLoader.shared
+    var cornerRadius: CGFloat?
     
-    init() {
+    init(cornerRadius: CGFloat? = nil) {
+        self.cornerRadius = cornerRadius
         super.init(frame: .zero)
         setupImage()
     }
@@ -26,12 +28,12 @@ class AsyncImageView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupImage() {
+    private func setupImage() {
         addSubview(imageView)
-        imageView.turnOffTAMIC()
+        imageView.layer.cornerRadius = cornerRadius ?? 0
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.equalToSuperview(view: self)
+        imageView.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
     
     @MainActor

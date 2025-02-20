@@ -8,11 +8,31 @@
 import UIKit
 import SnapKit
 
+protocol FiltersViewControllerProtocol: AnyObject {
+    func didSelectOptions(_ options: [FilterModel.Section: URLQueryItem])
+}
+
 class FiltersViewController: UIViewController {
-   
-    lazy var collectionView = setupCollectionView()
+    
     
     let filtersService = FiltersService()
+    let confirmButton = CustomButton(type: .iconWithText,
+                                     title: "Подтвердить",
+                                     icon: .checkmark,
+                                     mainColor: .systemPink)
+    
+    weak var delegate: FiltersViewControllerProtocol?
+    lazy var collectionView = setupCollectionView()
+
+    var selectedFilters: [FilterModel.Section: URLQueryItem] = [:] {
+        didSet {
+            if selectedFilters.isEmpty {
+                confirmButton.state = .disabled
+            } else {
+                confirmButton.state = .normal
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,14 +47,22 @@ class FiltersViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.allowsMultipleSelection = true
         
         collectionView.register(FilterCollectionViewCell.self,
                                 forCellWithReuseIdentifier: FilterCollectionViewCell.reuseId)
         collectionView.register(HeaderView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: HeaderView.reuseId)
-        
         return collectionView
+    }
+    
+    func setupButton() {
+        confirmButton.onTap = {
+            self.delegate?.didSelectOptions(self.selectedFilters)
+            self.dismiss(animated: true)
+        }
+        confirmButton.state = selectedFilters.isEmpty ? .disabled : .normal
     }
 }
 
@@ -43,7 +71,7 @@ private extension FiltersViewController {
         configureView()
         embedViews()
         configureConstraints()
-        
+        setupButton()
     }
     
     func configureView() {
@@ -51,13 +79,18 @@ private extension FiltersViewController {
     }
     
     func embedViews() {
-        view.addSubview(collectionView)
+        view.addSubviews(collectionView, confirmButton)
     }
     
     func configureConstraints() {
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
             make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        confirmButton.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview().inset(16)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-10)
         }
     }
 }
@@ -72,16 +105,7 @@ extension FiltersViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let section = filtersService.section(for: section) else { return 0 }
         
-        switch section {
-        case .topics:
-            return filtersService.topicsCount
-        case .order:
-            return filtersService.orderCount
-        case .orientation:
-            return filtersService.orientationCount
-        case .colors:
-            return filtersService.colorsCount
-        }
+        return filtersService.filtersCount(in: section)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -92,19 +116,50 @@ extension FiltersViewController: UICollectionViewDataSource {
                                         reuseId: FilterCollectionViewCell.reuseId,
                                         indexPath: indexPath)
         
-        let data = filtersService.configure(section: section, for: indexPath.item)
         
-        if section == .colors, let color = data.color {
+        let viewModel = filtersService.configure(section: section, for: indexPath.item)
+        
+        if section == .colors, let color = viewModel.color {
             cell.configure(label: nil, with: color)
         } else {
-            cell.configure(label: data.title)
+            cell.configure(label: viewModel.title)
         }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let section = filtersService.section(for: indexPath.section) else { return }
+        
+        var value: String
+        switch section {
+        case .topics:
+            value = FilterModel.Topics.allCases[indexPath.item].rawValue
+        case .order:
+            value = FilterModel.Order.allCases[indexPath.item].rawValue
+        case .orientation:
+            value = FilterModel.Orientation.allCases[indexPath.item].rawValue
+        case .colors:
+            value = FilterModel.Colors.allCases[indexPath.item].rawValue
+        }
+        
+        selectedFilters[section] = URLQueryItem(name: section.queryKey, value: value)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        guard let section = filtersService.section(for: indexPath.section) else { return }
+        
+        selectedFilters[section] = nil
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        collectionView.indexPathsForSelectedItems?
+            .filter { $0.section == indexPath.section }
+            .forEach { collectionView.deselectItem(at: $0, animated: false) }
+        return true
     }
 }
 
 extension FiltersViewController {
-    
     func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {

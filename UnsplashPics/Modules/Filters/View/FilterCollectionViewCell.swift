@@ -10,7 +10,13 @@ import UIKit
 class FilterCollectionViewCell: UICollectionViewCell {
     static let reuseId = "FilterCollectionViewCell"
     
-    private let filterBadge = FilterBadge(mainColor: .systemTeal)
+    private let filterBadge = FilterBadge()
+    
+    override var isSelected: Bool {
+            didSet {
+                filterBadge.borderColor = isSelected ? .systemPink : .lightGray
+            }
+        }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,16 +34,10 @@ class FilterCollectionViewCell: UICollectionViewCell {
 
 private extension FilterCollectionViewCell {
     func initialize() {
-        configureView()
         embedViews()
         configureConstraints()
-        
     }
-    
-    func configureView() {
-       
-    }
-    
+
     func embedViews() {
         contentView.addSubview(filterBadge)
     }

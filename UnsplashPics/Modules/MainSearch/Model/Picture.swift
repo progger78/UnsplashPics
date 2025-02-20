@@ -10,11 +10,7 @@ import Foundation
 struct UnsplashPhoto: Decodable, Hashable {
     let id: String
     let createdAt: String
-    let width: Int
-    let height: Int
-    let color: String
     let likes: Int
-    let description: String?
     let urls: Urls
 
     struct Urls: Decodable, Hashable {
@@ -22,7 +18,6 @@ struct UnsplashPhoto: Decodable, Hashable {
         let full: String
         let regular: String
         let small: String
-        let thumb: String
     }
     
     func hash(into hasher: inout Hasher) {

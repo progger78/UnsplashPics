@@ -9,124 +9,53 @@ import UIKit
 
 
 class FiltersService {
-    enum Colors: String, CaseIterable {
-        case blackAndWhite, white, yellow, orange, red, purple, magenta, green, teal, blue
-
-        var description: String {
-            switch self {
-            case .blackAndWhite: return "Чёрно-белый"
-            case .white: return "Белый"
-            case .yellow: return "Жёлтый"
-            case .orange: return "Оранжевый"
-            case .red: return "Красный"
-            case .purple: return "Фиолетовый"
-            case .magenta: return "Малиновый"
-            case .green: return "Зелёный"
-            case .teal: return "Бирюзовый"
-            case .blue: return "Синий"
-            }
-        }
-
-        var color: UIColor {
-            switch self {
-            case .blackAndWhite: return UIColor(white: 0.5, alpha: 1.0)
-            case .white: return .white
-            case .yellow: return .yellow
-            case .orange: return .orange
-            case .red: return .red
-            case .purple: return .purple
-            case .magenta: return .magenta
-            case .green: return .green
-            case .teal: return .systemTeal
-            case .blue: return .blue
-            }
-        }
-    }
-
-    enum Order: String, CaseIterable {
-        case relevant, latest
-
-        var description: String {
-            switch self {
-            case .relevant: return "Актуальные"
-            case .latest: return "Последние"
-            }
-        }
-    }
-
-    enum Orientation: String, CaseIterable {
-        case landscape, portrait, squarish
-
-        var description: String {
-            switch self {
-            case .landscape: return "Альбомная"
-            case .portrait: return "Портретная"
-            case .squarish: return "Квадратная"
-            }
-        }
-    }
-
-    enum Topics: String, CaseIterable {
-        case nature, cars, people, art
-
-        var description: String {
-            switch self {
-            case .nature: return "Природа"
-            case .cars: return "Автомобили"
-            case .people: return "Люди"
-            case .art: return "Искусство"
-            }
-        }
-    }
-
-    enum Section: Int, CaseIterable {
-        case topics = 0
-        case order
-        case orientation
-        case colors
-    }
     
     var filtersCount: Int {
-        Section.allCases.count
+        FilterModel.Section.allCases.count
     }
     
-    var topicsCount: Int {
-        Topics.allCases.count
+    func filtersCount(in section: FilterModel.Section) -> Int {
+        switch section {
+        case .topics: return FilterModel.Topics.allCases.count
+        case .order: return FilterModel.Order.allCases.count
+        case .orientation: return FilterModel.Orientation.allCases.count
+        case .colors: return FilterModel.Colors.allCases.count
+        }
     }
-    
-    var orientationCount: Int {
-        Orientation.allCases.count
+
+    func createQueryItemsForFilters(section: FilterModel.Section, value: String?) -> URLQueryItem? {
+        guard let value = value else { return nil }
+        
+        let key: String
+        
+        switch section {
+        case .topics: key = "query"
+        case .order: key = "order_by"
+        case .orientation: key = "orientation"
+        case .colors: key = "color"
+        }
+        
+        return URLQueryItem(name: key, value: value)
     }
+
     
-    var colorsCount: Int {
-        Colors.allCases.count
-    }
-    
-    var orderCount: Int {
-        Order.allCases.count
-    }
-    
-    func section(for index: Int) -> Section? {
-        guard let section = Section(rawValue: index) else { return nil }
+    func section(for index: Int) -> FilterModel.Section? {
+        guard let section = FilterModel.Section(rawValue: index) else { return nil }
         
         return section
     }
     
-    func configure(section: Section, for index: Int) -> (title: String, color: UIColor?) {
+    func configure(section: FilterModel.Section, for index: Int) -> FilterModel {
         switch section {
         case .topics:
-            let title = Topics.allCases[index].description
-            return (title: title, color: nil)
+            return FilterModel(title: FilterModel.Topics.allCases[index].description, isSelected: false)
         case .order:
-            let title = Order.allCases[index].description
-            return (title: title, color: nil)
+            return FilterModel(title: FilterModel.Order.allCases[index].description, isSelected: false)
         case .orientation:
-            let title = Orientation.allCases[index].description
-            return (title: title, color: nil)
+            return FilterModel(title: FilterModel.Orientation.allCases[index].description, isSelected: false)
         case .colors:
-            let title = Colors.allCases[index].description
-            let color = Colors.allCases[index].color
-            return (title: title, color: color)
+            let colorCase = FilterModel.Colors.allCases[index]
+            return FilterModel(title: colorCase.description, color: colorCase.color, isSelected: false)
         }
     }
 }
