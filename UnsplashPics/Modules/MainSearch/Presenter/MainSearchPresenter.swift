@@ -20,7 +20,7 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
     private let networkService: NetworkService
     weak var view: (any MainSearchViewControllerProtocol)?
     var suggestionHistory: [String] = []
-    var page = 0
+    var page = 1
     var isLoading = false
     var hasMore = true
     
@@ -38,44 +38,54 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
     func searchPhotos(with searchTerm: String, filters: [URLQueryItem]? = nil) async {
         resetSearch()
         addToSuggestionsHistory(searchTerm)
-        view?.setLoading(true)
-        defer { view?.setLoading(false) }
+        view?.setLoadingState(true)
+        defer { view?.setLoadingState(false) }
         
         do {
             guard let photos = try await networkService.searchPhotos(for: searchTerm,
                                                                      with: filters,
-                                                                     page: page) else { return }
+                       
+                                                                     page: page)
+            else { return }
+            
             hasMore = photos.totalPages > page
             
-            view?.appendInitialPhotos(photos: photos.results)
+            if photos.results.isEmpty {
+                view?.setEmptyState()
+                return
+            }
+            
+            view?.setNormalState(with: photos.results)
+            page += 1
         } catch let error as NetworkError {
-            view?.showError(with: error.description)
+            view?.setErrorState(with: error.description)
         } catch {
-            view?.showError(with: NetworkError.unknownError(error: error).description)
+            view?.setErrorState(with: NetworkError.unknownError(error: error).description)
         }
     }
     
     func resetSearch() {
-        page = 0
+        page = 1
         isLoading = false
         hasMore = false
     }
     
     @MainActor
     func fetchInitialPhotos() async {
-        view?.setLoading(true)
-        defer { view?.setLoading(false) }
+        view?.setLoadingState(true)
+        defer { view?.setLoadingState(false) }
         
         do {
             guard let photos = try await networkService.fetchInitialPhotos(page: page) else { return }
             
             let unsplashPhotos = convert(photos)
-           
-            view?.appendInitialPhotos(photos: unsplashPhotos)
+            
+            view?.setNormalState(with: unsplashPhotos)
+            page += 1
         } catch let error as NetworkError {
-            view?.showError(with: error.description)
+            view?.setErrorState(with: error.description)
         } catch {
-            view?.showError(with: NetworkError.unknownError(error: error).description)
+            view?.setErrorState(with: NetworkError.unknownError(error: error).description)
         }
     }
     
@@ -90,17 +100,15 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
         }
     }
     
-    
     @MainActor
     func fetchMorePhotos() async {
-        page += 1
         guard !isLoading, hasMore else { return }
         
         isLoading = true
-        view?.setLoading(true)
+        view?.setLoadingState(true)
         
         defer {
-            view?.setLoading(false)
+            view?.setLoadingState(false)
             isLoading = false
         }
         
@@ -109,18 +117,22 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
             switch lastRequestType {
             case .search:
                 guard let newPhotos = try await networkService.fetchMorePhotos(page: page) as? SearchResponse else { return }
+                hasMore = newPhotos.totalPages > page
                 view?.appendNewPhotos(photos: newPhotos.results)
             case .initialLoad:
                 guard let newPhotos = try await networkService.fetchMorePhotos(page: page) as? [DetailPhoto] else { return }
+                
                 let unsplashPhotos = convert(newPhotos)
                 view?.appendNewPhotos(photos: unsplashPhotos)
             case .none:
                 break
             }
+            page += 1
+            try await Task.sleep(nanoseconds: 300_000_000)
         } catch let error as NetworkError {
-            view?.showError(with: error.description)
+            view?.setErrorState(with: error.description)
         } catch {
-            view?.showError(with: NetworkError.unknownError(error: error).description)
+            view?.setErrorState(with: NetworkError.unknownError(error: error).description)
         }
     }
 }

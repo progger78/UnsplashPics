@@ -20,14 +20,6 @@ struct UnsplashPhoto: Decodable, Hashable {
         let small: String
     }
     
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    static func ==(lhs: UnsplashPhoto, rhs: UnsplashPhoto) -> Bool {
-        lhs.id == rhs.id
-    }
-    
     var formattedDate: String? {
         guard let dateString = Date.format(dateString: createdAt) else { return nil }
         

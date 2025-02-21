@@ -39,32 +39,168 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5D290E81-3652-4EA1-94BB-3277719D2AA8"
+            uuid = "CC6EC013-4A9E-4A02-8838-AAEA680B8E27"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "UnsplashPics/Shared/API/HTTPDataDownloader.swift"
+            filePath = "UnsplashPics/Modules/MainSearch/View/MainSearchView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "18"
-            endingLineNumber = "18"
-            landmarkName = "fetchData(as:request:)"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "set(state:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "46ADC6DA-F01D-462B-8066-2DF179746777"
+            uuid = "30C446D9-E60C-493F-A3F2-3F0A30EA43FC"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UnsplashPics/UIComponents/SuggestionTextField.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "138"
+            endingLineNumber = "138"
+            landmarkName = "textFieldShouldReturn(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9A10E215-30C4-476A-8C7B-ADE2E49316D4"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UnsplashPics/Modules/MainSearch/Presenter/MainSearchPresenter.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
-            landmarkName = "fetchInitialPhotos()"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "fetchMorePhotos()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9A10E215-30C4-476A-8C7B-ADE2E49316D4 - 1b8d4c83e266d3e5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for UnsplashPics.MainSearchPresenterImpl.fetchMorePhotos() async -&gt; ()"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Modules/MainSearch/Presenter/MainSearchPresenter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "119"
+                  endingLineNumber = "119">
+               </Location>
+               <Location
+                  uuid = "9A10E215-30C4-476A-8C7B-ADE2E49316D4 - 388ebe171b8a4115"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for UnsplashPics.MainSearchPresenterImpl.fetchMorePhotos() async -&gt; ()"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Modules/MainSearch/Presenter/MainSearchPresenter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "119"
+                  endingLineNumber = "119">
+               </Location>
+               <Location
+                  uuid = "9A10E215-30C4-476A-8C7B-ADE2E49316D4 - 6852d617f94c2ffb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for UnsplashPics.MainSearchPresenterImpl.fetchMorePhotos() async -&gt; ()"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Modules/MainSearch/Presenter/MainSearchPresenter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "119"
+                  endingLineNumber = "119">
+               </Location>
+               <Location
+                  uuid = "9A10E215-30C4-476A-8C7B-ADE2E49316D4 - 96c2ee359c3501fc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(8) suspend resume partial function for UnsplashPics.MainSearchPresenterImpl.fetchMorePhotos() async -&gt; ()"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Modules/MainSearch/Presenter/MainSearchPresenter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "119"
+                  endingLineNumber = "119">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6823D39C-AB28-4C1E-9ECA-D71EA8C0446D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UnsplashPics/Modules/MainSearch/Presenter/MainSearchPresenter.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
+            landmarkName = "fetchMorePhotos()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "6823D39C-AB28-4C1E-9ECA-D71EA8C0446D - cec09745dd7515a4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "UnsplashPics.MainSearchPresenterImpl.fetchMorePhotos() async -&gt; ()"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Modules/MainSearch/Presenter/MainSearchPresenter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104">
+               </Location>
+               <Location
+                  uuid = "6823D39C-AB28-4C1E-9ECA-D71EA8C0446D - 1b8d4c83e266d5f2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for UnsplashPics.MainSearchPresenterImpl.fetchMorePhotos() async -&gt; ()"
+                  moduleName = "UnsplashPics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a1/Developer/projects/iOS/UnsplashPics/UnsplashPics/Modules/MainSearch/Presenter/MainSearchPresenter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C32C0731-247A-4238-BE79-35627DCF71F7"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UnsplashPics/UIComponents/ErrorStateView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "configure(for:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

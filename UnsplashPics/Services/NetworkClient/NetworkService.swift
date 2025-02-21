@@ -87,6 +87,7 @@ final class NetworkServiceImpl: NetworkService, HTTPDataDownloader {
         
         guard let url = components.url else { throw NetworkError.invalidUrl }
         
+        print(url.absoluteString)
         var request = URLRequest(url: url)
         request.allHTTPHeaderFields = prepareHeader()
         request.httpMethod = "GET"

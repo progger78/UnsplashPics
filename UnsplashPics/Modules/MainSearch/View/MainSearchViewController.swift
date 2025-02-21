@@ -8,10 +8,11 @@
 import UIKit
 
 protocol MainSearchViewControllerProtocol: AnyObject {
-    func appendInitialPhotos(photos: [UnsplashPhoto])
     func appendNewPhotos(photos: [UnsplashPhoto])
-    func setLoading(_ isLoading: Bool)
-    func showError(with errorMessage: String)
+    func setLoadingState (_ isLoading: Bool)
+    func setErrorState(with errorMessage: String)
+    func setEmptyState()
+    func setNormalState(with photos: [UnsplashPhoto])
 }
 
 final class MainSearchViewController: UIViewController {
@@ -56,8 +57,9 @@ private extension MainSearchViewController {
     }
     
     func configureConstraints() {
-        mainView.turnOffTAMIC()
-        mainView.equalToSuperview(view: view)
+        mainView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 }
 
@@ -92,20 +94,24 @@ extension MainSearchViewController: MainSearchViewProtocol {
     }
 }
 extension MainSearchViewController: MainSearchViewControllerProtocol {
-    func appendInitialPhotos(photos: [UnsplashPhoto]) {
-        mainView.update(with: photos)
+    func setLoadingState(_ isLoading: Bool) {
+        mainView.set(state: .loading(isLoading: isLoading))
+    }
+    
+    func setErrorState(with errorMessage: String) {
+        mainView.set(state: .error)
+    }
+    
+    func setEmptyState() {
+        mainView.set(state: .empty)
+    }
+    
+    func setNormalState(with photos: [UnsplashPhoto]) {
+        mainView.set(state: .normal(photos: photos))
     }
     
     func appendNewPhotos(photos: [UnsplashPhoto]) {
-        mainView.appendPhotos(photos)
-    }
-    
-    func setLoading(_ isLoading: Bool) {
-        mainView.isLoading = isLoading
-    }
-    
-    func showError(with errorMessage: String) {
-        
+        mainView.appendPhotos(photos: photos)
     }
 }
 

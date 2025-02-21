@@ -74,6 +74,12 @@ class SuggestionTextField: UITextField {
         delegate = self
     }
     
+    private func isTextEmpty(text: String?) -> Bool {
+        guard let text else { return false }
+        
+        return text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
     private func setupTableView() {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "suggestionCell")
         tableView.delegate = self
@@ -128,7 +134,8 @@ class SuggestionTextField: UITextField {
 
 extension SuggestionTextField: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let text = textField.text, !text.isEmpty {
+        let isTextEmpty = isTextEmpty(text: textField.text)
+        if !isTextEmpty {
             searchDelegate?.didTapSearch(with: textField.text!)
             tableView.isHidden = true
             textField.resignFirstResponder()

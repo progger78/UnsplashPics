@@ -23,6 +23,7 @@ class CustomButton: UIView {
         case infoIcon = "info.circle"
         case checkmark = "checkmark"
         case add = "plus"
+        case reload = "arrow.clockwise.circle"
     }
     
     var state: State = .normal {

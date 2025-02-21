@@ -16,7 +16,6 @@ class EmptyStateView: UIView {
         self.message = message
         super.init(frame: .zero)
         configure()
-        
     }
     
     required init?(coder: NSCoder) {
@@ -32,7 +31,7 @@ class EmptyStateView: UIView {
         setupConstraints()
     }
     
-    func setupConstraints() {
+    private func setupConstraints() {
         iconImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(-120)
