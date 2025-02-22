@@ -8,7 +8,9 @@
 import UIKit
 
 protocol DetailInfoControllerProtocol: AnyObject {
-    func showInfo(for photo: DetailPhoto)
+    func setLoadingState(_ isLoading: Bool)
+    func setErrorState(with errorMessage: String)
+    func setNormalState(with photo: DetailPhoto)
 }
 
 class DetailInfoViewController: UIViewController {
@@ -41,8 +43,16 @@ class DetailInfoViewController: UIViewController {
 }
 
 extension DetailInfoViewController: DetailInfoControllerProtocol {
-    func showInfo(for photo: DetailPhoto) {
-        detailView.configure(with: photo)
+    func setLoadingState(_ isLoading: Bool) {
+        detailView.set(state: .loading(isLoading: isLoading))
+    }
+    
+    func setErrorState(with errorMessage: String) {
+        detailView.set(state: .error(errorMessage: errorMessage))
+    }
+    
+    func setNormalState(with photo: DetailPhoto) {
+        detailView.set(state: .normal(photo: photo))
     }
 }
 
@@ -75,6 +85,10 @@ extension DetailInfoViewController: DetailInfoViewDelegate {
                 print("Failed to send")
             }
         }
+    }
+    
+    func reloadData() {
+        Task { await presenter.loadDetailPhotoInfo() }
     }
 }
 

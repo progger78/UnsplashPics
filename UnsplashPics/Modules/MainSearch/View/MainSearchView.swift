@@ -10,12 +10,13 @@ import UIKit
 protocol MainSearchViewProtocol: AnyObject {
     func didTapCell(in view: UIView, photo: UnsplashPhoto)
     func loadMorePhotos()
+    func reloadData()
 }
 
 final class MainSearchView: UIView {
     
     enum State {
-        case error
+        case error(errorMessage: String)
         case loading(isLoading: Bool)
         case empty
         case normal(photos: [UnsplashPhoto])
@@ -24,8 +25,7 @@ final class MainSearchView: UIView {
     weak var delegate: (any MainSearchViewProtocol)?
     
     private let customCollectionView = ReusableCollectionView()
-    private let emptyStateView = EmptyStateView(message: "Фото не найдено")
-    private let loadingIndicator = LoadingIndicator()
+    private let stateView = StateView()
     private let suggestionTextField = SuggestionTextField()
     private let menu = CustomMenu()
     
@@ -33,6 +33,7 @@ final class MainSearchView: UIView {
         super.init(frame: .zero)
         initialize()
         customCollectionView.delegate = self
+        stateView.onReloadTap = { self.delegate?.reloadData() }
     }
     
     required init?(coder: NSCoder) {
@@ -57,22 +58,24 @@ final class MainSearchView: UIView {
     
     func set(state: State) {
         switch state {
-        case .error:
-            print("error")
+        case .error(let errorMessage):
+            stateView.configure(for: .error(errorText: errorMessage))
+            customCollectionView.isHidden = true
         case .loading(let isLoading):
-            emptyStateView.isHidden = true
-            loadingIndicator.animate(isLoading: isLoading)
+            stateView.configure(for: .loading(isLoading: isLoading))
         case .empty:
-                self.customCollectionView.isHidden = true
-                self.loadingIndicator.animate(isLoading: false)
-            DispatchQueue.main.async { self.emptyStateView.isHidden = false }
+            stateView.configure(for: .empty(text: "Фото не найдены"))
+            customCollectionView.isHidden = true
         case .normal(let photos):
+            stateView.configure(for: .default)
             customCollectionView.isHidden = false
-            emptyStateView.isHidden = true
-            loadingIndicator.animate(isLoading: false)
             update(photos: photos)
             customCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), position: .top)
         }
+    }
+    
+    func focusTextFild() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { self.suggestionTextField.becomeFirstResponder() }
     }
 }
 
@@ -81,6 +84,7 @@ private extension MainSearchView {
         configureView()
         embedViews()
         configureConstraints()
+        customCollectionView.dismissKeyboard = { self.endEditing(true) }
     }
     
     func configureView() {
@@ -88,8 +92,8 @@ private extension MainSearchView {
     }
     
     func embedViews() {
-        addSubviews(customCollectionView, emptyStateView, suggestionTextField, loadingIndicator)
-        emptyStateView.isHidden = true
+        stateView.addSubviews(customCollectionView)
+        addSubviews(stateView, suggestionTextField)
     }
     
     func configureConstraints() {
@@ -104,11 +108,7 @@ private extension MainSearchView {
             make.height.equalTo(50)
         }
         
-        loadingIndicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
-        
-        emptyStateView.snp.makeConstraints { make in
+        stateView.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
             make.top.equalTo(suggestionTextField.snp.bottom)
         }
@@ -127,9 +127,5 @@ extension MainSearchView: ReusableCollectionViewDelegate {
     
     func fetchMorePhotos() {
         delegate?.loadMorePhotos()
-    }
-    
-    func dismissKeyboard() {
-        endEditing(true)
     }
 }

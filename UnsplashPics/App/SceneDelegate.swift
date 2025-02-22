@@ -17,8 +17,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         setupTheme()
+        let networkService = NetworkServiceImpl()
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = UINavigationController(rootViewController: MainSearchViewController())
+        window?.rootViewController = MainTabBarController(service: networkService)
         window?.makeKeyAndVisible()
     }
     

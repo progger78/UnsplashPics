@@ -14,8 +14,9 @@ protocol FiltersViewControllerProtocol: AnyObject {
 
 class FiltersViewController: UIViewController {
     
-    
     let filtersService = FiltersService()
+    let titleLabel = CustomLabel(type: .title, numberOfLines: 1)
+    
     let confirmButton = CustomButton(type: .iconWithText,
                                      title: "Подтвердить",
                                      icon: .checkmark,
@@ -48,7 +49,7 @@ class FiltersViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.allowsMultipleSelection = true
-        
+        collectionView.isScrollEnabled = false
         collectionView.register(FilterCollectionViewCell.self,
                                 forCellWithReuseIdentifier: FilterCollectionViewCell.reuseId)
         collectionView.register(HeaderView.self,
@@ -76,15 +77,21 @@ private extension FiltersViewController {
     
     func configureView() {
         view.backgroundColor = .systemBackground
+        titleLabel.set("Что будем искать?")
     }
     
     func embedViews() {
-        view.addSubviews(collectionView, confirmButton)
+        view.addSubviews(collectionView, confirmButton, titleLabel)
     }
     
     func configureConstraints() {
+        titleLabel.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview().inset(16)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(15)
+        }
+        
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            make.top.equalTo(titleLabel.snp.bottom).offset(5)
             make.leading.trailing.bottom.equalToSuperview()
         }
         

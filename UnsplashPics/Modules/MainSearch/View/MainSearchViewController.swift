@@ -17,18 +17,13 @@ protocol MainSearchViewControllerProtocol: AnyObject {
 
 final class MainSearchViewController: UIViewController {
     
-    let presenter: MainSearchPresenterProtocol
+    
     let mainView = MainSearchView()
-    
-    init() {
-        let networkService = NetworkServiceImpl()
-        self.presenter = MainSearchPresenterImpl(networkService: networkService)
-        super.init(nibName: nil, bundle: nil)
-        self.presenter.view = self
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    var presenter: MainSearchPresenterProtocol?
+    var shouldFocusTextField: Bool? {
+        didSet {
+            mainView.focusTextFild()
+        }
     }
     
     override func viewDidLoad() {
@@ -36,7 +31,7 @@ final class MainSearchViewController: UIViewController {
         initialize()
         mainView.setDelegate(self)
         mainView.delegate = self
-        Task { await presenter.fetchInitialPhotos() }
+        Task { await presenter?.fetchInitialPhotos() }
         mainView.configureNavBar(with: navigationItem)
     }
 }
@@ -65,7 +60,9 @@ private extension MainSearchViewController {
 
 extension MainSearchViewController: SuggestionTextFieldDelegate {
     var suggestionsHistory: [String] {
-        return presenter.suggestionHistory
+        guard let suggestionHistory = presenter?.suggestionHistory else { return [] }
+        
+        return suggestionHistory
     }
     
     func didTapFilters() {
@@ -79,7 +76,7 @@ extension MainSearchViewController: SuggestionTextFieldDelegate {
     }
     
     func didTapSearch(with query: String) {
-        Task { await self.presenter.searchPhotos(with: query, filters: nil) }
+        Task { await self.presenter?.searchPhotos(with: query, filters: nil) }
     }
 }
 
@@ -90,7 +87,11 @@ extension MainSearchViewController: MainSearchViewProtocol {
     }
     
     func loadMorePhotos() {
-        Task { await presenter.fetchMorePhotos() }
+        Task { await presenter?.fetchMorePhotos() }
+    }
+    
+    func reloadData() {
+        Task { await presenter?.reloadData() }
     }
 }
 extension MainSearchViewController: MainSearchViewControllerProtocol {
@@ -99,7 +100,7 @@ extension MainSearchViewController: MainSearchViewControllerProtocol {
     }
     
     func setErrorState(with errorMessage: String) {
-        mainView.set(state: .error)
+        mainView.set(state: .error(errorMessage: errorMessage))
     }
     
     func setEmptyState() {
@@ -118,6 +119,6 @@ extension MainSearchViewController: MainSearchViewControllerProtocol {
 extension MainSearchViewController: FiltersViewControllerProtocol {
     func didSelectOptions(_ options: [FilterModel.Section : URLQueryItem]) {
         let filters = Array(options.values)
-        Task { await presenter.searchPhotos(with: "", filters: filters) }
+        Task { await presenter?.searchPhotos(with: "", filters: filters) }
     }
 }

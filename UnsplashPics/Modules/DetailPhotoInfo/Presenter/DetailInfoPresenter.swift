@@ -36,11 +36,18 @@ class DetailInfoPresenterImp: DetailInfoPresenterProtocol {
     
     @MainActor
     func loadDetailPhotoInfo() async {
+        view?.setLoadingState(true)
+        
+        defer { view?.setLoadingState(false) }
+        
         do {
             guard let detailPhoto = try await networkService.loadDetailPhoto(for: photoId) else { return }
-            view?.showInfo(for: detailPhoto)
+            
+            view?.setNormalState(with: detailPhoto)
+        } catch let error as NetworkError {
+            view?.setErrorState(with: error.description)
         } catch {
-            print(error)
+            view?.setErrorState(with: NetworkError.unknownError(error: error).description)
         }
     }
     

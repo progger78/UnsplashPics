@@ -10,12 +10,12 @@ import UIKit
 protocol ReusableCollectionViewDelegate: AnyObject {
     func didTapCell(with photo: UnsplashPhoto)
     func fetchMorePhotos()
-    func dismissKeyboard()
 }
 
 class ReusableCollectionView: UIView {
 
     weak var delegate: ReusableCollectionViewDelegate?
+    var dismissKeyboard: (() -> Void)?
     
     enum Section {
         case main
@@ -143,7 +143,7 @@ extension ReusableCollectionView: UICollectionViewDelegateFlowLayout {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        delegate?.dismissKeyboard()
+        dismissKeyboard?()
         
         paginationHandler.handleScroll(for: scrollView, isLoading: isLoading, hasMore: true)
     }

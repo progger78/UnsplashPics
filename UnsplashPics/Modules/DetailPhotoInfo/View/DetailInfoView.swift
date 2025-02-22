@@ -6,29 +6,41 @@
 //
 
 import UIKit
+import SkeletonView
 
 protocol DetailInfoViewDelegate: AnyObject {
     func didTapContainer(with user: User)
     func didTapFavoriteButton(for photo: DetailPhoto)
     func didTapShare(_ photo: DetailPhoto)
     func showSnackbar(message: String)
+    func reloadData()
 }
 
 class DetailInfoView: UIView {
+    
+    enum State {
+        case error(errorMessage: String)
+        case loading(isLoading: Bool)
+        case empty
+        case normal(photo: DetailPhoto)
+    }
+    
     weak var delegate: DetailInfoViewDelegate?
     
-    let asyncImage = AsyncImageView(cornerRadius: 40)
-    let descriptionTitleLabel = CustomLabel(type: .title, numberOfLines: 1)
-    let descriptionLabel = CustomLabel(type: .secondary, numberOfLines: 4)
-    let authorTitleLabel = CustomLabel(type: .title, numberOfLines: 1)
-    let userInfoContainer = InfoContianer()
-    var addToFavoritsButton = CustomButton(type: .iconWithText,
+    private let asyncImage = AsyncImageView(cornerRadius: 40)
+    private let descriptionTitleLabel = CustomLabel(type: .title, numberOfLines: 1)
+    private let descriptionLabel = CustomLabel(type: .secondary, numberOfLines: 4)
+    private let authorTitleLabel = CustomLabel(type: .title, numberOfLines: 1)
+    private let stateView = StateView()
+    private let userInfoContainer = InfoContianer()
+    private var addToFavoritsButton = CustomButton(type: .iconWithText,
                                                 icon: .add,
                                                 mainColor: .systemPink)
-    let menu = CustomMenu()
-    
-    let backgroundView = UIView()
-    var photo: DetailPhoto?
+    private let menu = CustomMenu()
+    private let backgroundView = CustomBackgroundView(mainBackgroundColor: .tertiarySystemGroupedBackground,
+                                                      cornerRadius: 40,
+                                                      maskedCorners: .upperCorners)
+    private var photo: DetailPhoto?
     var isFavorite = false
     
     override init(frame: CGRect) {
@@ -46,30 +58,36 @@ class DetailInfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with photo: DetailPhoto) {
-        self.photo = photo
-        Task { await asyncImage.setImage(for: photo.urls.regular) }
-        
-        descriptionTitleLabel.set("Описание")
-        descriptionLabel.set(photo.altDescription?.capitalized ?? "Нет информации")
-        userInfoContainer.set(with: photo)
-        authorTitleLabel.set("Автор")
-        userInfoContainer.handleTap = {
-            self.delegate?.didTapContainer(with: photo.user)
+    func set(state: State) {
+        switch state {
+        case .error(let errorMessage):
+            stateView.configure(for: .error(errorText: errorMessage))
+        case .loading(let isLoading):
+            stateView.configure(for: .loading(isLoading: isLoading))
+        case .empty:
+            break
+        case .normal(let photo):
+            stateView.configure(for: .default)
+            
+            self.photo = photo
+            descriptionLabel.set(photo.altDescription?.capitalized ?? "Нет информации")
+            Task { await asyncImage.setImage(for: photo.urls.regular) }
+            userInfoContainer.set(with: photo)
+            userInfoContainer.handleTap = {
+                self.delegate?.didTapContainer(with: photo.user)
+            }
+            stateView.isHidden = true
+            updateFavoriteButtonTitle()
         }
-        updateFavoriteButtonTitle()
+       
     }
     
     func configureView(with navItem: UINavigationItem) {
         backgroundColor = .systemBackground
-        backgroundView.backgroundColor = .tertiarySystemGroupedBackground
-        backgroundView.layer.cornerRadius = 40
-        backgroundView.layer.borderWidth = 1
-        backgroundView.layer.borderColor = UIColor.systemGray.cgColor
-        backgroundView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        
-      
         navItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: setupMenu())
+        descriptionTitleLabel.set("Описание")
+        authorTitleLabel.set("Автор")
+        stateView.onReloadTap = { self.delegate?.reloadData() }
     }
     
     func setupMenu() -> UIMenu {
@@ -115,7 +133,7 @@ private extension DetailInfoView {
     }
     
     func embedViews() {
-        addSubviews(asyncImage, backgroundView)
+        addSubviews(asyncImage, backgroundView, stateView)
         backgroundView.addSubviews(descriptionTitleLabel,
                                    descriptionLabel,
                                    authorTitleLabel,
@@ -124,6 +142,10 @@ private extension DetailInfoView {
     }
     
     func configureConstraints() {
+        stateView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         asyncImage.snp.makeConstraints { make in
             make.leading.top.trailing.equalToSuperview()
             make.height.equalToSuperview().dividedBy(2)

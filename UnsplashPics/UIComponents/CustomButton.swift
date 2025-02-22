@@ -24,6 +24,7 @@ class CustomButton: UIView {
         case checkmark = "checkmark"
         case add = "plus"
         case reload = "arrow.clockwise.circle"
+        case search = "magnifyingglass"
     }
     
     var state: State = .normal {

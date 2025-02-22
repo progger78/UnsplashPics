@@ -13,11 +13,11 @@ struct FilterModel {
     var isSelected: Bool
     
     enum Colors: String, CaseIterable {
-        case blackAndWhite, white, yellow, orange, red, purple, magenta, green, teal, blue
+        case black_and_white, white, yellow, orange, red, purple, magenta, green, teal, blue
 
         var description: String {
             switch self {
-            case .blackAndWhite: return "Чёрно-белый"
+            case .black_and_white: return "Чёрно-белый"
             case .white: return "Белый"
             case .yellow: return "Жёлтый"
             case .orange: return "Оранжевый"
@@ -32,7 +32,7 @@ struct FilterModel {
 
         var color: UIColor {
             switch self {
-            case .blackAndWhite: return UIColor(white: 0.5, alpha: 1.0)
+            case .black_and_white: return UIColor(white: 0.5, alpha: 1.0)
             case .white: return .white
             case .yellow: return .yellow
             case .orange: return .orange

@@ -12,6 +12,7 @@ protocol MainSearchPresenterProtocol: AnyObject {
     var view: MainSearchViewControllerProtocol? { get set }
     func searchPhotos(with searchTerm: String, filters: [URLQueryItem]?) async
     func fetchMorePhotos() async
+    func reloadData() async
     func fetchInitialPhotos() async
     func addToSuggestionsHistory(_ query: String)
 }
@@ -23,7 +24,9 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
     var page = 1
     var isLoading = false
     var hasMore = true
-    
+    var lastSearchTerm = ""
+    var lastSearchFilters: [URLQueryItem]? = nil
+     
     init(networkService: NetworkService) {
         self.networkService = networkService
     }
@@ -36,6 +39,8 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
     
     @MainActor
     func searchPhotos(with searchTerm: String, filters: [URLQueryItem]? = nil) async {
+        lastSearchTerm = searchTerm
+        lastSearchFilters = filters
         resetSearch()
         addToSuggestionsHistory(searchTerm)
         view?.setLoadingState(true)
@@ -62,6 +67,10 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
         } catch {
             view?.setErrorState(with: NetworkError.unknownError(error: error).description)
         }
+    }
+    
+    func reloadData() async {
+        await searchPhotos(with: lastSearchTerm, filters: lastSearchFilters)
     }
     
     func resetSearch() {
