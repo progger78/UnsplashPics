@@ -26,12 +26,6 @@ class ReusableCollectionView: UIView {
         case small
     }
     
-    enum State {
-        case loading
-        case error
-        case loaded
-    }
-    
     private let spacing: CGFloat = 10
     private lazy var collectionView: UICollectionView = setupCollectionView()
     private lazy var paginationHandler = PaginationHandler(threshold: 140) { self.delegate?.fetchMorePhotos() }
@@ -90,11 +84,7 @@ class ReusableCollectionView: UIView {
     
     func appendPhotos(_ newPhotos: [UnsplashPhoto]) {
         var snapshot = dataSource.snapshot()
-        let existingIds = Set(snapshot.itemIdentifiers.map { $0.id })
-        let uniquePhotos = newPhotos.filter { !existingIds.contains($0.id) }
-        guard !uniquePhotos.isEmpty else { return }
-        
-        snapshot.appendItems(uniquePhotos)
+        snapshot.appendItems(newPhotos)
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     

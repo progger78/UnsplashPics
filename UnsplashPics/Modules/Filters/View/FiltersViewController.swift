@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 protocol FiltersViewControllerProtocol: AnyObject {
-    func didSelectOptions(_ options: [FilterModel.Section: URLQueryItem])
+    func didSelectOptions(_ options: [FilterModel.Section: String?])
 }
 
 class FiltersViewController: UIViewController {
@@ -25,7 +25,7 @@ class FiltersViewController: UIViewController {
     weak var delegate: FiltersViewControllerProtocol?
     lazy var collectionView = setupCollectionView()
 
-    var selectedFilters: [FilterModel.Section: URLQueryItem] = [:] {
+    var selectedFilters: [FilterModel.Section: String?] = [:] {
         didSet {
             if selectedFilters.isEmpty {
                 confirmButton.state = .disabled
@@ -137,19 +137,9 @@ extension FiltersViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let section = filtersService.section(for: indexPath.section) else { return }
         
-        var value: String
-        switch section {
-        case .topics:
-            value = FilterModel.Topics.allCases[indexPath.item].rawValue
-        case .order:
-            value = FilterModel.Order.allCases[indexPath.item].rawValue
-        case .orientation:
-            value = FilterModel.Orientation.allCases[indexPath.item].rawValue
-        case .colors:
-            value = FilterModel.Colors.allCases[indexPath.item].rawValue
-        }
+        let queryValue = filtersService.createQueryForFilter(in: section, indexPath: indexPath)
         
-        selectedFilters[section] = URLQueryItem(name: section.queryKey, value: value)
+        selectedFilters[section] = queryValue
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

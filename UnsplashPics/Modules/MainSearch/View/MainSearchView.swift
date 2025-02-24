@@ -75,7 +75,7 @@ final class MainSearchView: UIView {
     }
     
     func focusTextFild() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { self.suggestionTextField.becomeFirstResponder() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { self.suggestionTextField.becomeFirstResponder() }
     }
 }
 

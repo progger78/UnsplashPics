@@ -12,10 +12,10 @@ class PersistanceManager {
     static let shared = PersistanceManager()
     
     enum PersistanceActionType { case add, remove }
-    
-    private let defaults = FavoritePhotosUserDefaults.shared
     enum Keys { static let favorites = "Favorites" }
     
+    private let defaults = FavoritePhotosUserDefaults.shared
+   
     private init() { }
     
     

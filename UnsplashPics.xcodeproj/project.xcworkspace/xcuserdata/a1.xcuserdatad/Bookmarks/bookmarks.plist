@@ -42,7 +42,7 @@ extension FavoritesViewController: FavoritesViewProtocol {
 				<key>trailing</key>
 				<string>
         let vc = MainSearchViewController()
-        vc.shouldFocusTextField = true
+        vc.title = "Search"
 </string>
 			</dict>
 			<key>title</key>

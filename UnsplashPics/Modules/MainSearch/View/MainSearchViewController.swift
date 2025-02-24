@@ -117,8 +117,8 @@ extension MainSearchViewController: MainSearchViewControllerProtocol {
 }
 
 extension MainSearchViewController: FiltersViewControllerProtocol {
-    func didSelectOptions(_ options: [FilterModel.Section : URLQueryItem]) {
-        let filters = Array(options.values)
+    func didSelectOptions(_ options: [FilterModel.Section: String?]) {
+        let filters = options.values.compactMap { $0 }.joined(separator: ",")
         Task { await presenter?.searchPhotos(with: "", filters: filters) }
     }
 }

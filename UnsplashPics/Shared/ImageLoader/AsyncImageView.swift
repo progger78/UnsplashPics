@@ -12,9 +12,11 @@ class AsyncImageView: UIView {
     private let imageView = UIImageView()
     private let imageLoader = ImageLoader.shared
     var cornerRadius: CGFloat?
+    var hasBorderColor: Bool
     
-    init(cornerRadius: CGFloat? = nil) {
+    init(cornerRadius: CGFloat? = nil, hasBorderColor: Bool = false) {
         self.cornerRadius = cornerRadius
+        self.hasBorderColor = hasBorderColor
         super.init(frame: .zero)
         setupImage()
     }
@@ -34,6 +36,10 @@ class AsyncImageView: UIView {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        if hasBorderColor {
+            imageView.layer.borderWidth = 1
+            imageView.layer.borderColor = UIColor.systemPink.cgColor
+        }
     }
     
     @MainActor

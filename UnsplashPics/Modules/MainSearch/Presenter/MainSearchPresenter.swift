@@ -10,7 +10,7 @@ import Foundation
 protocol MainSearchPresenterProtocol: AnyObject {
     var suggestionHistory: [String] { get set }
     var view: MainSearchViewControllerProtocol? { get set }
-    func searchPhotos(with searchTerm: String, filters: [URLQueryItem]?) async
+    func searchPhotos(with searchTerm: String, filters: String?) async
     func fetchMorePhotos() async
     func reloadData() async
     func fetchInitialPhotos() async
@@ -25,7 +25,7 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
     var isLoading = false
     var hasMore = true
     var lastSearchTerm = ""
-    var lastSearchFilters: [URLQueryItem]? = nil
+    var lastSearchFilters: String? = nil
      
     init(networkService: NetworkService) {
         self.networkService = networkService
@@ -38,7 +38,7 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
     }
     
     @MainActor
-    func searchPhotos(with searchTerm: String, filters: [URLQueryItem]? = nil) async {
+    func searchPhotos(with searchTerm: String, filters: String? = nil) async {
         lastSearchTerm = searchTerm
         lastSearchFilters = filters
         resetSearch()

@@ -23,21 +23,22 @@ class FiltersService {
         }
     }
 
-    func createQueryItemsForFilters(section: FilterModel.Section, value: String?) -> URLQueryItem? {
-        guard let value = value else { return nil }
-        
-        let key: String
+    func createQueryForFilter(in section: FilterModel.Section, indexPath: IndexPath) -> String {
+        var queryValue: String
         
         switch section {
-        case .topics: key = "query"
-        case .order: key = "order_by"
-        case .orientation: key = "orientation"
-        case .colors: key = "color"
+        case .topics:
+            queryValue = FilterModel.Topics.allCases[indexPath.item].rawValue
+        case .order:
+            queryValue = FilterModel.Order.allCases[indexPath.item].rawValue
+        case .orientation:
+            queryValue = FilterModel.Orientation.allCases[indexPath.item].rawValue
+        case .colors:
+            queryValue = FilterModel.Colors.allCases[indexPath.item].rawValue
         }
         
-        return URLQueryItem(name: key, value: value)
+        return queryValue
     }
-
     
     func section(for index: Int) -> FilterModel.Section? {
         guard let section = FilterModel.Section(rawValue: index) else { return nil }
@@ -48,14 +49,14 @@ class FiltersService {
     func configure(section: FilterModel.Section, for index: Int) -> FilterModel {
         switch section {
         case .topics:
-            return FilterModel(title: FilterModel.Topics.allCases[index].description, isSelected: false)
+            return FilterModel(title: FilterModel.Topics.allCases[index].description)
         case .order:
-            return FilterModel(title: FilterModel.Order.allCases[index].description, isSelected: false)
+            return FilterModel(title: FilterModel.Order.allCases[index].description)
         case .orientation:
-            return FilterModel(title: FilterModel.Orientation.allCases[index].description, isSelected: false)
+            return FilterModel(title: FilterModel.Orientation.allCases[index].description)
         case .colors:
             let colorCase = FilterModel.Colors.allCases[index]
-            return FilterModel(title: colorCase.description, color: colorCase.color, isSelected: false)
+            return FilterModel(title: colorCase.description, color: colorCase.color)
         }
     }
 }

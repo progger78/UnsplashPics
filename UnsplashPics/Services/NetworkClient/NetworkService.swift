@@ -13,11 +13,12 @@ fileprivate enum AccessKey: String {
 
 protocol NetworkService {
     func searchPhotos(for searchTerm: String,
-                      with filters: [URLQueryItem]?,
+                      with filters: String?,
                       page: Int) async throws -> SearchResponse?
     func fetchMorePhotos(page: Int) async throws -> Any? 
     func loadDetailPhoto(for id: String) async throws -> DetailPhoto?
     func fetchInitialPhotos(page: Int) async throws -> [DetailPhoto]?
+    func fetchUserPhotos(for username: String) async throws -> [DetailPhoto]?
     var lastRequestType: NetworkServiceImpl.LastRequestType { get set }
 }
 
@@ -26,11 +27,11 @@ final class NetworkServiceImpl: NetworkService, HTTPDataDownloader {
     enum Constants: String {
         case baseUrl = "https://api.unsplash.com"
         case searchPath = "/search/photos"
-        case randomPhotosPath = "/photos"
+        case photosPath = "/photos"
     }
     
     enum LastRequestType {
-        case search(searchTerm: String, filters: [URLQueryItem]?)
+        case search(searchTerm: String, filters: String?)
         case initialLoad
         case none
     }
@@ -47,19 +48,31 @@ final class NetworkServiceImpl: NetworkService, HTTPDataDownloader {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
     
+    func fetchUserPhotos(for username: String) async throws -> [DetailPhoto]? {
+        let path = "/users/\(username)/photos"
+        
+        let queryItems = [
+            URLQueryItem(name: "page", value: String(1)),
+            URLQueryItem(name: "per_page", value: String(picturesPerPage))
+        ]
+        
+        let photos: [DetailPhoto]? = try await makeRequest(path: path, queryItems: queryItems)
+        return photos
+    }
+    
     func fetchInitialPhotos(page: Int) async throws -> [DetailPhoto]? {
         let queryItems = [
             URLQueryItem(name: "page", value: String(page)),
             URLQueryItem(name: "per_page", value: String(picturesPerPage))
         ]
         
-        let photos: [DetailPhoto]? = try await makeRequest(path: Constants.randomPhotosPath.rawValue, queryItems: queryItems)
+        let photos: [DetailPhoto]? = try await makeRequest(path: Constants.photosPath.rawValue, queryItems: queryItems)
         lastRequestType = .initialLoad
         return photos
     }
     
     func searchPhotos(for searchTerm: String,
-                      with filters: [URLQueryItem]? = nil,
+                      with filters: String? = nil,
                       page: Int) async throws -> SearchResponse? {
         
         var queryItems = [
@@ -68,7 +81,7 @@ final class NetworkServiceImpl: NetworkService, HTTPDataDownloader {
         ]
         
         if let filters {
-            queryItems.append(contentsOf: filters)
+            queryItems.append(URLQueryItem(name: "query", value: filters))
         } else {
             queryItems.append(URLQueryItem(name: "query", value: searchTerm))
         }

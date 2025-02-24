@@ -10,7 +10,6 @@ import UIKit
 struct FilterModel {
     let title: String
     var color: UIColor? = nil
-    var isSelected: Bool
     
     enum Colors: String, CaseIterable {
         case black_and_white, white, yellow, orange, red, purple, magenta, green, teal, blue
@@ -87,19 +86,6 @@ struct FilterModel {
         case order
         case orientation
         case colors
-        
-        var queryKey: String {
-            switch self {
-            case .topics:
-                return "query"
-            case .order:
-                return "order_by"
-            case .orientation:
-                return "orientation"
-            case .colors:
-                return "color"
-            }
-        }
     }
 }
 

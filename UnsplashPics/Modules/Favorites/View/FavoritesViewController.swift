@@ -71,6 +71,7 @@ extension FavoritesViewController: ReusableCollectionViewDelegate {
 extension FavoritesViewController: FavoritesViewProtocol {
     func didTapSearchButton() {
         let vc = MainSearchViewController()
+        vc.title = "Search"
         vc.shouldFocusTextField = true
         let networkService = NetworkServiceImpl()
         let presenter = MainSearchPresenterImpl(networkService: networkService)
