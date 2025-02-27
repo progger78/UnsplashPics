@@ -41,7 +41,6 @@ class PersistanceManager {
             favorites.append(favorite)
         case .remove:
             favorites.removeAll { $0.id == favorite.id }
-            
         }
         save(favorites: favorites)
     }

@@ -7,64 +7,96 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "764C2244-B03A-4166-91E5-A18415130247"
+            uuid = "EECB3F28-F926-4DC6-A961-3807EA715FEE"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "UnsplashPics/Modules/MainSearch/View/MainSearchViewController.swift"
+            filePath = "UnsplashPics/Modules/UserProfile/Presenter/UserProfilePresenter.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
-            landmarkName = "didTapSearch(with:)"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
+            landmarkName = "loadUserCollections()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E9797010-B495-4CE0-9231-0764DBAC76B1"
+            uuid = "585282F6-BA72-4AD1-9D55-8300859FEDE5"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "UnsplashPics/Modules/MainSearch/Presenter/MainSearchPresenter.swift"
+            filePath = "UnsplashPics/Modules/UserProfile/Presenter/UserProfilePresenter.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "41"
-            endingLineNumber = "41"
-            landmarkName = "searchPhotos(with:filters:)"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "loadUserCollections()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7E103808-4B25-45F7-9CA5-D545C123EBB4"
+            uuid = "9E363F19-CA7A-4435-A115-BC382A26648F"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "UnsplashPics/Services/NetworkClient/NetworkService.swift"
+            filePath = "UnsplashPics/Modules/UserProfile/View/UserProfileView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
-            landmarkName = "makeRequest(path:queryItems:)"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
+            landmarkName = "set(state:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "16B3AD47-F89C-4327-BD6E-A35BFE3BA83E"
+            uuid = "5DB07736-CF52-40C2-9D02-5377381A7F90"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "UnsplashPics/Services/NetworkClient/NetworkService.swift"
+            filePath = "UnsplashPics/Modules/UserProfile/View/UserProfileView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
-            landmarkName = "makeRequest(path:queryItems:)"
+            startingLineNumber = "70"
+            endingLineNumber = "70"
+            landmarkName = "set(state:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "764D0E9F-5CC3-4D15-871A-5CFF0A7229DB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UnsplashPics/Modules/UserProfile/View/UserProfileView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
+            landmarkName = "set(state:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9C5304CF-A330-4CF2-B9ED-AB2B23F5A4F1"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UnsplashPics/Modules/UserProfile/View/UserProfileViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "setupData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

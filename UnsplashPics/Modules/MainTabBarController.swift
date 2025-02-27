@@ -38,7 +38,7 @@ final class MainTabBarController: UITabBarController {
         searchVC.presenter = searchPresenter
         searchPresenter.view = searchVC
         searchVC.title = "Photos"
-        searchVC.tabBarItem = UITabBarItem(title: "Photos", image: UIImage(systemName: "bitcoinsign.circle"), tag: 0)
+        searchVC.tabBarItem = UITabBarItem(title: "Photos", image: UIImage(systemName: "camera.aperture"), tag: 0)
         return UINavigationController(rootViewController: searchVC)
     }
     

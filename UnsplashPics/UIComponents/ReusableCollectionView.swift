@@ -13,7 +13,7 @@ protocol ReusableCollectionViewDelegate: AnyObject {
 }
 
 class ReusableCollectionView: UIView {
-
+    
     weak var delegate: ReusableCollectionViewDelegate?
     var dismissKeyboard: (() -> Void)?
     
@@ -84,7 +84,11 @@ class ReusableCollectionView: UIView {
     
     func appendPhotos(_ newPhotos: [UnsplashPhoto]) {
         var snapshot = dataSource.snapshot()
-        snapshot.appendItems(newPhotos)
+        let existingIds = Set(snapshot.itemIdentifiers.map { $0.id })
+        let uniquePhotos = newPhotos.filter { !existingIds.contains($0.id) }
+        guard !uniquePhotos.isEmpty else { return }
+        
+        snapshot.appendItems(uniquePhotos)
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
@@ -95,7 +99,6 @@ class ReusableCollectionView: UIView {
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
-  
     func scrollToItem(at indexPath: IndexPath, position: UICollectionView.ScrollPosition) {
         collectionView.scrollToItem(at: indexPath, at: position, animated: true)
     }

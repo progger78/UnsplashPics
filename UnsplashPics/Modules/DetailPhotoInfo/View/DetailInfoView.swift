@@ -6,10 +6,9 @@
 //
 
 import UIKit
-import SkeletonView
 
 protocol DetailInfoViewDelegate: AnyObject {
-    func didTapContainer(with user: User)
+    func didTapContainer(with user: UserForPhoto)
     func didTapFavoriteButton(for photo: DetailPhoto)
     func didTapShare(_ photo: DetailPhoto)
     func showSnackbar(message: String)
@@ -21,7 +20,6 @@ class DetailInfoView: UIView {
     enum State {
         case error(errorMessage: String)
         case loading(isLoading: Bool)
-        case empty
         case normal(photo: DetailPhoto)
     }
     
@@ -50,8 +48,13 @@ class DetailInfoView: UIView {
     }
     
     func updateFavoriteButtonTitle() {
-        let title = isFavorite ? "Удалить из избранного" : "Добавить в избранное"
-        addToFavoritsButton.setTitle(title)
+        if isFavorite {
+            addToFavoritsButton.setTitle("Удалить из избранного")
+            addToFavoritsButton.setIcon(.delete)
+        } else {
+            addToFavoritsButton.setTitle("Добавить в избранное")
+            addToFavoritsButton.setIcon(.add)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -64,8 +67,6 @@ class DetailInfoView: UIView {
             stateView.configure(for: .error(errorText: errorMessage))
         case .loading(let isLoading):
             stateView.configure(for: .loading(isLoading: isLoading))
-        case .empty:
-            break
         case .normal(let photo):
             stateView.configure(for: .default)
             
@@ -73,13 +74,10 @@ class DetailInfoView: UIView {
             descriptionLabel.set(photo.altDescription?.capitalized ?? "Нет информации")
             Task { await asyncImage.setImage(for: photo.urls.regular) }
             userInfoContainer.set(with: photo)
-            userInfoContainer.handleTap = {
-                self.delegate?.didTapContainer(with: photo.user)
-            }
+            userInfoContainer.handleTap = { self.delegate?.didTapContainer(with: photo.user) }
             stateView.isHidden = true
             updateFavoriteButtonTitle()
         }
-       
     }
     
     func configureView(with navItem: UINavigationItem) {

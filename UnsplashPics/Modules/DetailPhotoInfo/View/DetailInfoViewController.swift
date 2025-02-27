@@ -57,8 +57,8 @@ extension DetailInfoViewController: DetailInfoControllerProtocol {
 }
 
 extension DetailInfoViewController: DetailInfoViewDelegate {
-    func didTapContainer(with user: User) {
-        let vc = UserProfileViewController(user: user)
+    func didTapContainer(with user: UserForPhoto) {
+        let vc = UserProfileViewController(username: user.username)
         navigationController?.pushViewController(vc, animated: true)
     }
     

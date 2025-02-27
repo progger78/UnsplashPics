@@ -25,6 +25,7 @@ class CustomButton: UIView {
         case add = "plus"
         case reload = "arrow.clockwise.circle"
         case search = "magnifyingglass"
+        case delete = "minus"
     }
     
     var state: State = .normal {
@@ -70,6 +71,10 @@ class CustomButton: UIView {
     
     func setTitle(_ title: String) {
         button.setTitle(title, for: .normal)
+    }
+    
+    func setIcon(_ iconImage: IconImage) {
+        button.setImage(UIImage(systemName: iconImage.rawValue), for: .normal)
     }
     
     private func setState() {

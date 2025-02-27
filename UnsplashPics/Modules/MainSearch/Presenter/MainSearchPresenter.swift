@@ -19,13 +19,14 @@ protocol MainSearchPresenterProtocol: AnyObject {
 
 final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
     private let networkService: NetworkService
-    weak var view: (any MainSearchViewControllerProtocol)?
+    private var page = 1
+    private var isLoading = false
+    private var hasMore = true
+    private var lastSearchTerm = ""
+    private var lastSearchFilters: String? = nil
     var suggestionHistory: [String] = []
-    var page = 1
-    var isLoading = false
-    var hasMore = true
-    var lastSearchTerm = ""
-    var lastSearchFilters: String? = nil
+    weak var view: (any MainSearchViewControllerProtocol)?
+   
      
     init(networkService: NetworkService) {
         self.networkService = networkService
@@ -87,25 +88,12 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
         do {
             guard let photos = try await networkService.fetchInitialPhotos(page: page) else { return }
             
-            let unsplashPhotos = convert(photos)
-            
-            view?.setNormalState(with: unsplashPhotos)
+            view?.setNormalState(with: photos)
             page += 1
         } catch let error as NetworkError {
             view?.setErrorState(with: error.description)
         } catch {
             view?.setErrorState(with: NetworkError.unknownError(error: error).description)
-        }
-    }
-    
-    private func convert(_ photos: [DetailPhoto]) -> [UnsplashPhoto] {
-        return photos.compactMap { photo in
-            let photoUrl = photo.urls
-            let urls = UnsplashPhoto.Urls(raw: photoUrl.regular,
-                                          full: photoUrl.full,
-                                          regular: photoUrl.regular,
-                                          small: photoUrl.small)
-            return UnsplashPhoto(id: photo.id, createdAt: photo.createdAt, likes: photo.likes, urls: urls)
         }
     }
     
@@ -129,10 +117,9 @@ final class MainSearchPresenterImpl: MainSearchPresenterProtocol {
                 hasMore = newPhotos.totalPages > page
                 view?.appendNewPhotos(photos: newPhotos.results)
             case .initialLoad:
-                guard let newPhotos = try await networkService.fetchMorePhotos(page: page) as? [DetailPhoto] else { return }
+                guard let newPhotos = try await networkService.fetchMorePhotos(page: page) as? [UnsplashPhoto] else { return }
                 
-                let unsplashPhotos = convert(newPhotos)
-                view?.appendNewPhotos(photos: unsplashPhotos)
+                view?.appendNewPhotos(photos: newPhotos)
             case .none:
                 break
             }

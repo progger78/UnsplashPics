@@ -50,6 +50,52 @@ extension FavoritesViewController: FavoritesViewProtocol {
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>40</string>
+					<key>EndingLineNumber</key>
+					<string>104</string>
+					<key>StartingColumnNumber</key>
+					<string>40</string>
+					<key>StartingLineNumber</key>
+					<string>104</string>
+					<key>Timestamp</key>
+					<string>762345110.388286</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>UnsplashPics/Modules/DetailPhotoInfo/View/DetailInfoView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string></string>
+				<key>leading</key>
+				<string>    }
+    
+    private func didTapSaveToGallery() {</string>
+				<key>trailing</key>
+				<string>
+        guard let photo else { return }
+        
+</string>
+			</dict>
+			<key>title</key>
+			<string>Вынестив  презентер</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
 	</array>
 </dict>
 </plist>

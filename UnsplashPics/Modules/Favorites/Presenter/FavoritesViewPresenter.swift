@@ -18,9 +18,8 @@ class FavoritesViewPresenter: FavoritesViewPresenterProtocol {
     
     private let persistanceManage = PersistanceManager.shared
     
-    
     func retrieveFavorites() {
-        let favorites =  persistanceManage.retrieveFavorites()
+        let favorites = persistanceManage.retrieveFavorites()
         let unsplashPhotos = convert(favorites)
         
         guard !unsplashPhotos.isEmpty else { view?.setEmptyState(); return }
