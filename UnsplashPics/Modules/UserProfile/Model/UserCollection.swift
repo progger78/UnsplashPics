@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 struct UserCollection: Codable {
     let id: String
     let title: String

@@ -56,15 +56,15 @@ extension FavoritesViewController: FavoritesViewProtocol {
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>40</string>
+					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>104</string>
+					<string>108</string>
 					<key>StartingColumnNumber</key>
-					<string>40</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>104</string>
+					<string>107</string>
 					<key>Timestamp</key>
-					<string>762345110.388286</string>
+					<string>762362544.750108</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -80,15 +80,16 @@ extension FavoritesViewController: FavoritesViewProtocol {
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string></string>
+				<string>    private func didTapSaveToGallery() {
+</string>
 				<key>leading</key>
 				<string>    }
     
-    private func didTapSaveToGallery() {</string>
+</string>
 				<key>trailing</key>
-				<string>
-        guard let photo else { return }
+				<string>        guard let photo else { return }
         
+        Task {
 </string>
 			</dict>
 			<key>title</key>

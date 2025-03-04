@@ -15,103 +15,54 @@ protocol UserProfilePresenterProtocol {
     func loadMoreCollections() async
     func loadUserProfile() async
     var view: UserProfileViewControllerProtocol? { get set }
-    var user: UserProfile? { get set }
 }
 
 class UserProfilePresenterImpl: UserProfilePresenterProtocol {
+    private let networkService: NetworkService
+    private let username: String
+    private var photosPage = 1
+    private var collectionsPage = 1
+    private var user: UserProfile?
+    private var isLoading = false
+    private var hasMorePhotos = true
+    private var hasMoreCollections = true
+    private var userCollections: [UserCollection] = []
+    private var userPhotos: [UnsplashPhoto] = []
     weak var view: UserProfileViewControllerProtocol?
-    let networkService: NetworkService
-    let username: String
-    var photosPage = 1
-    var collectionsPage = 1
-    var user: UserProfile?
-    var isLoading = false
-    var hasMorePhotos = true
-    var hasMoreCollections = true
-    var userCollections: [UserCollection] = []
-    var userPhotos: [UnsplashPhoto] = []
     
     init(networkService: NetworkService, username: String) {
         self.username = username
         self.networkService = networkService
     }
     
-    @MainActor
     func loadUserPhotos() async {
-        guard let user else { return }
-        
-        do {
-            let photos = try await networkService.fetchUserInfo(for: username,
-                                                              infoType: .photos,
-                                                              type: [UnsplashPhoto].self,
-                                                              page: photosPage)
-            
-            userPhotos.append(contentsOf: photos)
-            hasMorePhotos = userPhotos.count < user.totalPhotos
-            
-            if photosPage > 1 {
-                view?.appendNewData(data: photos, for: .photos)
-            } else {
-                view?.setNormalState(with: photos, for: .photos)
-            }
-            photosPage += 1
-            try await Task.sleep(nanoseconds: 300_000_000)
-        } catch {
-            handleError(error: error)
-        }
+        await loadUserData(page: &photosPage,
+                           hasMore: &hasMorePhotos,
+                           totalItems: user?.totalPhotos ?? 0,
+                           userInfoType: .photos,
+                           dataArray: &userPhotos)
     }
     
-    @MainActor
     func loadUserCollections() async {
-        guard let user else { return }
-        
-        do {
-            let collections = try await networkService.fetchUserInfo(for: username,
-                                                                     infoType: .collections,
-                                                                     type: [UserCollection].self,
-                                                                     page: collectionsPage)
-            
-            userCollections.append(contentsOf: collections)
-            hasMoreCollections = userCollections.count < user.totalCollections
-            
-            if collectionsPage > 1 {
-                view?.appendNewData(data: collections, for: .collections)
-            } else {
-                view?.setNormalState(with: collections, for: .collections)
-            }
-            collectionsPage += 1
-            try await Task.sleep(nanoseconds: 300_000_000)
-        } catch {
-            handleError(error: error)
-        }
+        await loadUserData(page: &collectionsPage,
+                           hasMore: &hasMoreCollections,
+                           totalItems: user?.totalCollections ?? 0,
+                           userInfoType: .collections,
+                           dataArray: &userCollections)
     }
     
     func loadMorePhotos() async {
-        guard hasMorePhotos, !isLoading  else { return }
-        
-        isLoading = true
-        view?.setLoadingState(true, for: .photos)
-        
-        defer {
-            isLoading = false
-            view?.setLoadingState(false, for: .photos)
-        }
-        
-        await loadUserPhotos()
+        await loadMoreData(isLoading: &isLoading,
+                           hasMore: hasMorePhotos,
+                           userInfoType: .photos,
+                           action: loadUserPhotos)
     }
     
     func loadMoreCollections() async {
-        guard hasMoreCollections, !isLoading  else { return }
-        
-        isLoading = true
-        view?.setLoadingState(true, for: .collections)
-        
-        defer {
-            isLoading = false
-            view?.setLoadingState(false, for: .collections)
-        }
-        
-        await loadUserCollections()
+        await loadMoreData(isLoading: &isLoading,
+                           hasMore: hasMoreCollections,
+                           userInfoType: .collections,
+                           action: loadUserCollections)
     }
     
     @MainActor
@@ -121,21 +72,77 @@ class UserProfilePresenterImpl: UserProfilePresenterProtocol {
         defer { view?.setLoadingState(false, for: .user) }
         
         do {
-            let user = try await networkService.fetchUserInfo(for: username,
-                                                              infoType: .user,
-                                                              type: UserProfile.self, page: 1)
+            let fetchedUser = try await networkService.fetchUserInfo(for: username,
+                                                                     infoType: .user,
+                                                                     type: UserProfile.self,
+                                                                     page: 1)
+            user = fetchedUser
             view?.setNormalState(with: user, for: .user)
+            await loadUserPhotos()
+            await loadUserCollections()
         } catch {
-            print(error)
-            handleError(error: error)
+            handle(error, for: .user)
         }
     }
     
-    func handleError(error: Error) {
+    @MainActor
+    private func loadUserData<T: Decodable>(
+        page: inout Int,
+        hasMore: inout Bool,
+        totalItems: Int,
+        userInfoType: UserInfoType,
+        dataArray: inout [T]
+    ) async {
+        do {
+            let newData = try await networkService.fetchUserInfo(
+                for: username,
+                infoType: userInfoType,
+                type: [T].self,
+                page: page)
+            
+            dataArray.append(contentsOf: newData)
+            hasMore = dataArray.count < totalItems
+            
+            if newData.isEmpty {
+                view?.setEmptyState(for: userInfoType)
+                return
+            }
+          
+            if page > 1 {
+                view?.appendNewData(data: newData, for: userInfoType)
+            } else {
+                view?.setNormalState(with: newData, for: userInfoType)
+            }
+            
+            page += 1
+            try await Task.sleep(nanoseconds: 300_000_000)
+        } catch{
+            handle(error, for: userInfoType)
+        }
+    }
+    
+    private func loadMoreData(isLoading: inout Bool,
+                              hasMore: Bool,
+                              userInfoType:  UserInfoType,
+                              action: @escaping() async -> Void) async  {
+        guard hasMore, !isLoading  else { return }
+        
+        isLoading = true
+        view?.setLoadingState(true, for: userInfoType)
+        
+        defer {
+            isLoading = false
+            view?.setLoadingState(false, for: userInfoType)
+        }
+        
+        await action()
+    }
+    
+    private func handle(_ error: Error, for userInfoType: UserInfoType) {
         if let networkError = error as? NetworkError {
-            view?.setErrorState(with: networkError.description)
+            view?.setErrorState(with: networkError.description, for: userInfoType)
         } else {
-            view?.setErrorState(with: NetworkError.unknownError(error: error).description)
+            view?.setErrorState(with: NetworkError.unknownError(error: error).description, for: userInfoType)
         }
     }
 }

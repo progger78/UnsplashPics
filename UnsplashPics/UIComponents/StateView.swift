@@ -70,21 +70,25 @@ class StateView: UIView {
                 self.setupActionButton()
             }
         case .loading(let isLoading):
-            iconImageView.isHidden = true
-            messageLabel.isHidden = true
-            reloadButton.isHidden = true
-            bringSubviewToFront(loadingIndicator)
-            loadingIndicator.animate(isLoading: isLoading)
+            DispatchQueue.main.async {
+                self.hideElements()
+                self.bringSubviewToFront(self.loadingIndicator)
+                self.loadingIndicator.animate(isLoading: isLoading)
+            }
         case .default:
-            iconImageView.isHidden = true
-            messageLabel.isHidden = true
-            reloadButton.isHidden = true
+            hideElements()
             loadingIndicator.animate(isLoading: false)
             actionButton.isHidden = true
         }
     }
     
-    func setupActionButton() {
+    private func hideElements() {
+        iconImageView.isHidden = true
+        messageLabel.isHidden = true
+        reloadButton.isHidden = true
+    }
+    
+    private func setupActionButton() {
         guard onActionButtonTap != nil else { return }
         
         addSubview(actionButton)

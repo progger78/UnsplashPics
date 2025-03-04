@@ -9,6 +9,13 @@ import UIKit
 
 class CustomStackView: UIView {
     
+    enum CustomStackViewAction {
+        case followers
+        case following
+    }
+    
+    var handleTap: ((CustomStackViewAction) -> Void)?
+    
     private let mainStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -16,8 +23,8 @@ class CustomStackView: UIView {
         return stackView
     }()
     
-    private let totalPhotosStackView = TitleValueStackView()
-    private let totalCollectionsStackView = TitleValueStackView()
+    private let totalFollowersStackView = TitleValueStackView()
+    private let totalFollowingsStackView = TitleValueStackView()
     private let totalLikesStackView = TitleValueStackView()
     
     override init(frame: CGRect) {
@@ -30,9 +37,19 @@ class CustomStackView: UIView {
     }
     
     func set(with user: UserProfile) {
-        totalPhotosStackView.configure(with: "Подписчики", value: user.followersCount)
-        totalCollectionsStackView.configure(with: "Подписки", value: user.followingCount)
+        totalFollowersStackView.configure(with: "Подписчики", value: user.followersCount)
+        totalFollowingsStackView.configure(with: "Подписки", value: user.followingCount)
         totalLikesStackView.configure(with: "Лайки", value: user.totalLikes)
+    }
+    
+    private func setupHandlers() {
+        totalFollowersStackView.handleTap = { [weak self] in
+            self?.handleTap?(.followers)
+        }
+        
+        totalFollowingsStackView.handleTap = { [weak self] in
+            self?.handleTap?(.following)
+        }
     }
 }
 
@@ -40,11 +57,12 @@ private extension CustomStackView {
     func initialize() {
         embedViews()
         configureConstraints()
+        setupHandlers()
     }
     
     func embedViews() {
         addSubview(mainStackView)
-        mainStackView.addArrangedSubviews(totalPhotosStackView, totalCollectionsStackView, totalLikesStackView)
+        mainStackView.addArrangedSubviews(totalFollowersStackView, totalFollowingsStackView, totalLikesStackView)
     }
     
     func configureConstraints() {

@@ -11,20 +11,18 @@ protocol UserProfileViewControllerProtocol: AnyObject {
     func setNormalState<T: Decodable>(with data: T, for type: UserInfoType)
     func setLoadingState(_ isLoading: Bool, for type: UserInfoType)
     func appendNewData<T: Decodable>(data: T, for type: UserInfoType)
-    func setErrorState(with errorMessage: String)
+    func setErrorState(with errorMessage: String, for type: UserInfoType)
+    func setEmptyState(for type: UserInfoType)
 }
 
 class UserProfileViewController: UIViewController {
     
     var presenter: UserProfilePresenterProtocol
-    
     var userView = UserProfileView()
-    
-    var user: UserProfile? {
-        didSet { setupData() }
-    }
+    let username: String
     
     init(username: String) {
+        self.username = username
         let networkService = NetworkServiceImpl()
         presenter = UserProfilePresenterImpl(networkService: networkService, username: username)
         super.init(nibName: nil, bundle: nil)
@@ -39,16 +37,6 @@ class UserProfileViewController: UIViewController {
         super.viewDidLoad()
         initialize()
         Task { await presenter.loadUserProfile() }
-    }
-    
-    func setupData() {
-        guard let user else { return }
-        
-        presenter.user = user
-        Task {
-            await presenter.loadUserPhotos()
-            await presenter.loadUserCollections()
-        }
     }
 }
 
@@ -72,22 +60,29 @@ private extension UserProfileViewController {
 }
 
 extension UserProfileViewController: UserProfileViewControllerProtocol {
+    func setEmptyState(for type: UserInfoType) {
+        if type == .collections {
+            userView.configureCollectionsVC(with: .empty)
+        } else if type == .photos {
+            userView.configurePhotosVC(with: .empty)
+        }
+    }
+    
     func setNormalState<T>(with data: T, for type: UserInfoType) where T : Decodable {
         switch type {
         case .user:
             guard let user = data as? UserProfile else { return }
             
-            self.user = user
-            userView.set(state: .normal(user: user))
+            userView.set(state: .normal(data: user))
         case .collections:
             guard let collections = data as? [UserCollection] else { return }
             
-            userView.loadInitialCollections(collections)
-            
+            userView.configureCollectionsVC(with: .normal(data: collections))
         case .photos:
             guard let photos = data as? [UnsplashPhoto] else { return }
             
-            userView.loadInitiaPhotos(photos)
+            userView.configurePhotosVC(with: .normal(data: photos))
+        case .followers, .following: break
         }
     }
     
@@ -103,18 +98,33 @@ extension UserProfileViewController: UserProfileViewControllerProtocol {
             guard let photos = data as? [UnsplashPhoto] else { return }
             
             userView.appendNewPhotos(photos)
+        case .followers, .following: break
         }
     }
     
     func setLoadingState(_ isLoading: Bool, for type: UserInfoType) {
-        guard type == .user else { return }
-        
-        userView.set(state: .loading(isLoading: isLoading))
+        switch type {
+        case .user:
+            userView.set(state: .loading(isLoading: isLoading))
+        case .collections:
+            userView.configureCollectionsVC(with: .loading(isLoading: isLoading))
+        case .photos:
+            userView.configurePhotosVC(with: .loading(isLoading: isLoading))
+        case .followers, .following: break
+        }
     }
 
     
-    func setErrorState(with errorMessage: String) {
-        userView.set(state: .error(errorMessage: errorMessage))
+    func setErrorState(with errorMessage: String, for type: UserInfoType) {
+        switch type {
+        case .user:
+            userView.set(state: .error(errorMessage: errorMessage))
+        case .collections:
+            userView.configureCollectionsVC(with: .error(errorMessage: errorMessage))
+        case .photos:
+            userView.configurePhotosVC(with: .error(errorMessage: errorMessage))
+        case .followers, .following: break
+        }
     }
 }
 
@@ -135,7 +145,8 @@ extension UserProfileViewController: UserCollectionsViewControllerDelegate {
     }
     
     func didTapCell(with collection: UserCollection) {
-        let vc = CollectionViewController(collection: collection)
+        let vc = CollectionViewController(collectionId: collection.id)
+        vc.title = collection.title
         navigationController?.pushViewController(vc, animated: true)
     }
 }
@@ -143,5 +154,17 @@ extension UserProfileViewController: UserCollectionsViewControllerDelegate {
 extension UserProfileViewController: UserProfileViewProtocol {
     func didTapReload() {
         Task { await presenter.loadUserProfile() }
+    }
+    
+    func didTapFollowers() {
+        let vc = FollowersViewController(username: username)
+        vc.title = "Подписчики"
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func didTapFollowing() {
+        let vc = FollowersViewController(username: username)
+        vc.title = "Подписки"
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

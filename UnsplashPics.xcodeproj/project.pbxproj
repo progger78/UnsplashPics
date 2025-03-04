@@ -78,6 +78,10 @@
 		63D186432D63534D0041DB37 /* DetailInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D186422D63534D0041DB37 /* DetailInfoView.swift */; };
 		63D186452D6353770041DB37 /* DetailInfoPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D186442D6353770041DB37 /* DetailInfoPresenter.swift */; };
 		63D186472D6357380041DB37 /* DetailPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D186462D6357380041DB37 /* DetailPhoto.swift */; };
+		63D693F82D75BC63006D98A1 /* FollowersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D693F72D75BC63006D98A1 /* FollowersViewController.swift */; };
+		63D693FA2D75BC76006D98A1 /* FollowersPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D693F92D75BC76006D98A1 /* FollowersPresenter.swift */; };
+		63D693FC2D75BED7006D98A1 /* ReusableTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D693FB2D75BED7006D98A1 /* ReusableTableView.swift */; };
+		63D693FE2D75DEDE006D98A1 /* UserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D693FD2D75DEDE006D98A1 /* UserTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -152,6 +156,10 @@
 		63D186422D63534D0041DB37 /* DetailInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailInfoView.swift; sourceTree = "<group>"; };
 		63D186442D6353770041DB37 /* DetailInfoPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailInfoPresenter.swift; sourceTree = "<group>"; };
 		63D186462D6357380041DB37 /* DetailPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPhoto.swift; sourceTree = "<group>"; };
+		63D693F72D75BC63006D98A1 /* FollowersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersViewController.swift; sourceTree = "<group>"; };
+		63D693F92D75BC76006D98A1 /* FollowersPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersPresenter.swift; sourceTree = "<group>"; };
+		63D693FB2D75BED7006D98A1 /* ReusableTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableTableView.swift; sourceTree = "<group>"; };
+		63D693FD2D75DEDE006D98A1 /* UserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,6 +342,7 @@
 		63CFD5F92D536158004A497F /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				63D693F32D75BC37006D98A1 /* Followers */,
 				63C94B6B2D6DD0EC00C90AB9 /* Collection */,
 				63C94B4E2D69E13100C90AB9 /* MainTabBarController.swift */,
 				63C94B442D69DBA800C90AB9 /* Favorites */,
@@ -421,6 +430,7 @@
 				63C94B562D6C9F4400C90AB9 /* CustomStackView.swift */,
 				63C94B582D6CA2DF00C90AB9 /* TitleValueStackView.swift */,
 				63C94B5F2D6CBF1900C90AB9 /* TabsPageViewController.swift */,
+				63D693FB2D75BED7006D98A1 /* ReusableTableView.swift */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -564,6 +574,40 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		63D693F32D75BC37006D98A1 /* Followers */ = {
+			isa = PBXGroup;
+			children = (
+				63D693F62D75BC4F006D98A1 /* Model */,
+				63D693F52D75BC49006D98A1 /* View */,
+				63D693F42D75BC43006D98A1 /* Presenter */,
+			);
+			path = Followers;
+			sourceTree = "<group>";
+		};
+		63D693F42D75BC43006D98A1 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				63D693F92D75BC76006D98A1 /* FollowersPresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		63D693F52D75BC49006D98A1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				63D693F72D75BC63006D98A1 /* FollowersViewController.swift */,
+				63D693FD2D75DEDE006D98A1 /* UserTableViewCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		63D693F62D75BC4F006D98A1 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -643,6 +687,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63D693FA2D75BC76006D98A1 /* FollowersPresenter.swift in Sources */,
 				63CFD6212D54BA9C004A497F /* ImageCache.swift in Sources */,
 				63C94B4D2D69DD4100C90AB9 /* FavoritesViewPresenter.swift in Sources */,
 				632DEE1A2D65FA5D00DDC54E /* UIViewController+Ext.swift in Sources */,
@@ -651,6 +696,7 @@
 				63CFD62D2D54FD5B004A497F /* LoadingIndicator.swift in Sources */,
 				63CFD5E92D535D98004A497F /* MainSearchViewController.swift in Sources */,
 				63CFD6332D563210004A497F /* DetailInfoViewController.swift in Sources */,
+				63D693F82D75BC63006D98A1 /* FollowersViewController.swift in Sources */,
 				63D186392D5CD5BF0041DB37 /* FilterCollectionViewCell.swift in Sources */,
 				63C94B462D69DBBF00C90AB9 /* FavoritesViewController.swift in Sources */,
 				632DEE222D6761AB00DDC54E /* ReusableCollectionView.swift in Sources */,
@@ -659,6 +705,7 @@
 				63CFD6252D54BBF7004A497F /* CustomLabel.swift in Sources */,
 				63D1862E2D5CC6B90041DB37 /* HeaderCollectionReusableView.swift in Sources */,
 				63C94B622D6CC2C700C90AB9 /* UserCollectionsViewController.swift in Sources */,
+				63D693FC2D75BED7006D98A1 /* ReusableTableView.swift in Sources */,
 				63C94B5B2D6CB81100C90AB9 /* UserCollection.swift in Sources */,
 				63CFD60D2D538ED4004A497F /* NetworkService.swift in Sources */,
 				632DEE152D64A89600DDC54E /* FavoritesPhotosUserDefaults.swift in Sources */,
@@ -681,6 +728,7 @@
 				63C94B572D6C9F4400C90AB9 /* CustomStackView.swift in Sources */,
 				63CFD6132D53997B004A497F /* MainSearchPresenter.swift in Sources */,
 				63D186432D63534D0041DB37 /* DetailInfoView.swift in Sources */,
+				63D693FE2D75DEDE006D98A1 /* UserTableViewCell.swift in Sources */,
 				632DEE1E2D65FAA900DDC54E /* EmptyStateView.swift in Sources */,
 				63C94B722D6DD12F00C90AB9 /* CollectionViewController.swift in Sources */,
 				63C94B512D6C63BC00C90AB9 /* UserForPhoto.swift in Sources */,

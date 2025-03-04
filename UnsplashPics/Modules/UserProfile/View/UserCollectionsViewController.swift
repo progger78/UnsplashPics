@@ -14,12 +14,20 @@ protocol UserCollectionsViewControllerDelegate: AnyObject {
 
 class UserCollectionsViewController: UIViewController {
 
+    enum State {
+        case error(errorMessage: String)
+        case loading(isLoading: Bool)
+        case normal(collections: [UserCollection])
+        case empty
+    }
+    
     weak var delegate: UserCollectionsViewControllerDelegate?
     
     private lazy var tableView = setupTableView()
     private lazy var paginationHandler = PaginationHandler { self.delegate?.loadMoreCollections() }
     private var collections: [UserCollection] = []
-    var isLoading = false
+    private var isLoading = false
+    private let stateView = StateView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +59,24 @@ class UserCollectionsViewController: UIViewController {
         
         return tableView
     }
+    
+    func set(state: State) {
+        switch state {
+        case .error(let errorMessage):
+            stateView.configure(for: .error(errorText: errorMessage))
+        case .loading(let isLoading):
+            self.isLoading = isLoading
+            stateView.configure(for: .loading(isLoading: isLoading))
+        case .normal(let collections):
+            stateView.isHidden = true
+            stateView.configure(for: .default)
+            update(with: collections)
+        case .empty:
+            tableView.isHidden = true
+            stateView.isHidden = false
+            stateView.configure(for: .empty(text: "Нет коллекций"))
+        }
+    }
 }
 
 private extension UserCollectionsViewController {
@@ -60,11 +86,15 @@ private extension UserCollectionsViewController {
     }
     
     func embedViews() {
-        view.addSubview(tableView)
+        view.addSubviews(tableView, stateView)
     }
     
     func configureConstraints() {
         tableView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        stateView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }

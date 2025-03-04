@@ -28,7 +28,7 @@ class PaginationHandler {
         guard totalContentHeight > visibleHeight else { return }
         
         if offset >= (totalContentHeight - visibleHeight - threshold) {
-            self.onFetchMore()
+            onFetchMore()
         }
     }
 }

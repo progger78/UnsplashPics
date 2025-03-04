@@ -14,18 +14,14 @@ protocol FiltersViewControllerProtocol: AnyObject {
 
 class FiltersViewController: UIViewController {
     
-    let filtersService = FiltersService()
-    let titleLabel = CustomLabel(type: .title, numberOfLines: 1)
+    private let filtersService = FiltersService()
+    private let titleLabel = CustomLabel(type: .title, numberOfLines: 1)
     
-    let confirmButton = CustomButton(type: .iconWithText,
+    private let confirmButton = CustomButton(type: .iconWithText,
                                      title: "Подтвердить",
                                      icon: .checkmark,
                                      mainColor: .systemPink)
-    
-    weak var delegate: FiltersViewControllerProtocol?
-    lazy var collectionView = setupCollectionView()
-
-    var selectedFilters: [FilterModel.Section: String?] = [:] {
+    private var selectedFilters: [FilterModel.Section: String?] = [:] {
         didSet {
             if selectedFilters.isEmpty {
                 confirmButton.state = .disabled
@@ -35,35 +31,12 @@ class FiltersViewController: UIViewController {
         }
     }
     
+    weak var delegate: FiltersViewControllerProtocol?
+    lazy var collectionView = setupCollectionView()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         initialize()
-    }
-    
-    private func setupCollectionView() -> UICollectionView {
-        let layout = UICollectionViewCompositionalLayout { section, _ in
-            return FiltersLayoutFabric.createFilterSection()
-        }
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.allowsMultipleSelection = true
-        collectionView.isScrollEnabled = false
-        collectionView.register(FilterCollectionViewCell.self,
-                                forCellWithReuseIdentifier: FilterCollectionViewCell.reuseId)
-        collectionView.register(HeaderView.self,
-                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                withReuseIdentifier: HeaderView.reuseId)
-        return collectionView
-    }
-    
-    func setupButton() {
-        confirmButton.onTap = {
-            self.delegate?.didSelectOptions(self.selectedFilters)
-            self.dismiss(animated: true)
-        }
-        confirmButton.state = selectedFilters.isEmpty ? .disabled : .normal
     }
 }
 
@@ -99,6 +72,32 @@ private extension FiltersViewController {
             make.horizontalEdges.equalToSuperview().inset(16)
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-10)
         }
+    }
+    
+    func setupCollectionView() -> UICollectionView {
+        let layout = UICollectionViewCompositionalLayout { section, _ in
+            return FiltersLayoutFabric.createFilterSection()
+        }
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.allowsMultipleSelection = true
+        collectionView.isScrollEnabled = false
+        collectionView.register(FilterCollectionViewCell.self,
+                                forCellWithReuseIdentifier: FilterCollectionViewCell.reuseId)
+        collectionView.register(HeaderView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: HeaderView.reuseId)
+        return collectionView
+    }
+    
+    func setupButton() {
+        confirmButton.onTap = {
+            self.delegate?.didSelectOptions(self.selectedFilters)
+            self.dismiss(animated: true)
+        }
+        confirmButton.state = selectedFilters.isEmpty ? .disabled : .normal
     }
 }
 

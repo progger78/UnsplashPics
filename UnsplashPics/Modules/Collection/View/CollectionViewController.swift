@@ -17,14 +17,11 @@ protocol CollectionViewControllerProtocol: AnyObject  {
 class CollectionViewController: UIViewController {
 
     let reusableCollectionView = ReusableCollectionView()
-    let collection: UserCollection
     var presenter: CollectionViewPresenterProtocol
     
-    init(collection: UserCollection) { 
-        self.collection = collection
+    init(collectionId: String) {
         let networkSerivce = NetworkServiceImpl()
-        presenter = CollectionViewPresenterImpl(networkService: networkSerivce)
-        presenter.collection = collection
+        presenter = CollectionViewPresenterImpl(networkService: networkSerivce, collectionId: collectionId)
         super.init(nibName: nil, bundle: nil)
         presenter.view = self
     }
@@ -43,14 +40,9 @@ class CollectionViewController: UIViewController {
 
 private extension CollectionViewController {
     func initialize() {
-        configureView()
         embedViews()
         configureConstraints()
         
-    }
-    
-    func configureView() {
-        title  = collection.title
     }
     
     func embedViews() {

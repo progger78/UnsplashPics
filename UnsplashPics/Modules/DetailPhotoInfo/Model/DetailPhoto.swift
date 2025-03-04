@@ -28,12 +28,6 @@ struct DetailPhoto: Codable, Hashable {
     struct Location: Codable {
         let city: String?
         let country: String?
-        let position: Position?
-    }
-
-    struct Position: Codable {
-        let latitude: Double?
-        let longitude: Double?
     }
 
     // MARK: - ProductLinks

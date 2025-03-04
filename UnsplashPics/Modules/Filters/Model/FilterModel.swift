@@ -13,7 +13,7 @@ struct FilterModel {
     
     enum Colors: String, CaseIterable {
         case black_and_white, white, yellow, orange, red, purple, magenta, green, teal, blue
-
+        
         var description: String {
             switch self {
             case .black_and_white: return "Чёрно-белый"
@@ -28,7 +28,7 @@ struct FilterModel {
             case .blue: return "Синий"
             }
         }
-
+        
         var color: UIColor {
             switch self {
             case .black_and_white: return UIColor(white: 0.5, alpha: 1.0)
@@ -44,10 +44,10 @@ struct FilterModel {
             }
         }
     }
-
+    
     enum Order: String, CaseIterable {
         case relevant, latest
-
+        
         var description: String {
             switch self {
             case .relevant: return "Актуальные"
@@ -55,10 +55,10 @@ struct FilterModel {
             }
         }
     }
-
+    
     enum Orientation: String, CaseIterable {
         case landscape, portrait, squarish
-
+        
         var description: String {
             switch self {
             case .landscape: return "Альбомная"
@@ -67,10 +67,10 @@ struct FilterModel {
             }
         }
     }
-
+    
     enum Topics: String, CaseIterable {
         case nature, cars, people, art
-
+        
         var description: String {
             switch self {
             case .nature: return "Природа"
@@ -80,7 +80,7 @@ struct FilterModel {
             }
         }
     }
-
+    
     enum Section: Int, CaseIterable {
         case topics = 0
         case order
@@ -89,3 +89,38 @@ struct FilterModel {
     }
 }
 
+extension FilterModel.Section {
+    
+    var caseIterableCount: Int {
+        switch self {
+        case .topics: return FilterModel.Topics.allCases.count
+        case .order: return FilterModel.Order.allCases.count
+        case .orientation: return FilterModel.Orientation.allCases.count
+        case .colors: return FilterModel.Colors.allCases.count
+        }
+    }
+    
+    func queryValue(at index: Int) -> String? {
+        switch self {
+        case .topics: return FilterModel.Topics.allCases[safe: index]?.rawValue
+        case .order: return FilterModel.Order.allCases[safe: index]?.rawValue
+        case .orientation: return FilterModel.Orientation.allCases[safe: index]?.rawValue
+        case .colors: return FilterModel.Colors.allCases[safe: index]?.rawValue
+        }
+    }
+    
+    func stringValue(at index: Int) -> String? {
+        switch self {
+        case .topics: return FilterModel.Topics.allCases[safe: index]?.description
+        case .order: return FilterModel.Order.allCases[safe: index]?.description
+        case .orientation: return FilterModel.Orientation.allCases[safe: index]?.description
+        case .colors: return FilterModel.Colors.allCases[safe: index]?.description
+        }
+    }
+    
+    func colorValue(at index: Int) -> UIColor? {
+        guard self == .colors else { return nil }
+        
+        return FilterModel.Colors.allCases[safe: index]?.color
+    }
+}

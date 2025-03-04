@@ -21,13 +21,12 @@ struct UserProfile: Codable {
     let totalLikes: Int
     let totalPhotos: Int
     let social: UserSocial?
-//    let photos: [UserPhoto]
     let tags: UserTags?
     let followersCount: Int
     let followingCount: Int
     
     var userLocation: String {
-        location != nil ? location! : "Локация неизвестна"
+        location ?? "Локация неизвестна"
     }
     
     // MARK: - ProfileImage
@@ -39,35 +38,16 @@ struct UserProfile: Codable {
 
     // MARK: - UserSocial
     struct UserSocial: Codable {
-        let instagramUsername: String
+        let instagramUsername: String?
         let portfolioUrl: String?
         let twitterUsername: String?
         let paypalEmail: String?
     }
 
-    // MARK: - UserPhoto
-    struct UserPhoto: Codable {
-        let id: String
-        let slug: String
-        let createdAt: String
-        let updatedAt: String
-        let blurHash: String
-        let assetType: String
-        let urls: PhotoURLs
-    }
-
-    // MARK: - PhotoURLs
-    struct PhotoURLs: Codable {
-        let raw: String
-        let full: String
-        let regular: String
-        let small: String
-    }
-
     // MARK: - UserTags
     struct UserTags: Codable {
-        let custom: [Tag]
-        let aggregated: [Tag]
+        let custom: [Tag]?
+        let aggregated: [Tag]?
     }
 
     // MARK: - Tag

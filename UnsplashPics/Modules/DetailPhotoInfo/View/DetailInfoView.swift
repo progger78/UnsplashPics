@@ -69,15 +69,18 @@ class DetailInfoView: UIView {
             stateView.configure(for: .loading(isLoading: isLoading))
         case .normal(let photo):
             stateView.configure(for: .default)
-            
+            configure(with: photo)
             self.photo = photo
-            descriptionLabel.set(photo.altDescription?.capitalized ?? "Нет информации")
-            Task { await asyncImage.setImage(for: photo.urls.regular) }
-            userInfoContainer.set(with: photo)
-            userInfoContainer.handleTap = { self.delegate?.didTapContainer(with: photo.user) }
-            stateView.isHidden = true
-            updateFavoriteButtonTitle()
         }
+    }
+    
+    private func configure(with photo: DetailPhoto) {
+        descriptionLabel.set(photo.altDescription?.capitalized ?? "Нет информации")
+        Task { await asyncImage.setImage(for: photo.urls.regular) }
+        userInfoContainer.set(with: photo)
+        userInfoContainer.handleTap = { self.delegate?.didTapContainer(with: photo.user) }
+        stateView.isHidden = true
+        updateFavoriteButtonTitle()
     }
     
     func configureView(with navItem: UINavigationItem) {
@@ -88,7 +91,7 @@ class DetailInfoView: UIView {
         stateView.onReloadTap = { self.delegate?.reloadData() }
     }
     
-    func setupMenu() -> UIMenu {
+    private func setupMenu() -> UIMenu {
          menu.onShareTap = {
              guard let photo = self.photo else { return }
              

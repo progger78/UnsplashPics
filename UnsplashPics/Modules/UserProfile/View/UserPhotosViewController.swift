@@ -14,9 +14,17 @@ protocol UserPhotosViewControllerDelegate: AnyObject {
 
 class UserPhotosViewController: UIViewController {
 
+    enum State {
+        case error(errorMessage: String)
+        case loading(isLoading: Bool)
+        case normal(userPhotos: [UnsplashPhoto])
+        case empty
+    }
+    
     weak var delegate: UserPhotosViewControllerDelegate?
     
     let reusableCollectionView = ReusableCollectionView()
+    let stateView = StateView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +38,26 @@ class UserPhotosViewController: UIViewController {
     
     func append(_ photos: [UnsplashPhoto]) {
         reusableCollectionView.appendPhotos(photos)
+    }
+    
+    func set(state: State) {
+        switch state {
+        case .error(let errorMessage):
+            stateView.configure(for: .error(errorText: errorMessage))
+        case .loading(let isLoading):
+            stateView.isHidden = true
+            reusableCollectionView.isLoading = isLoading
+            stateView.configure(for: .loading(isLoading: isLoading))
+        case .normal(let collections):
+            reusableCollectionView.isHidden = false
+            stateView.isHidden = true
+            stateView.configure(for: .default)
+            update(with: collections)
+        case .empty:
+            reusableCollectionView.isHidden = true
+            stateView.isHidden = false
+            stateView.configure(for: .empty(text:"Нет фото"))
+        }
     }
 }
 
@@ -52,14 +80,18 @@ private extension UserPhotosViewController {
     
     func configureView() {
         view.backgroundColor = .systemBackground
+        stateView.isHidden = true
     }
     
     func embedViews() {
-        view.addSubview(reusableCollectionView)
+        view.addSubviews(reusableCollectionView, stateView)
     }
     
     func configureConstraints() {
         reusableCollectionView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        stateView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }

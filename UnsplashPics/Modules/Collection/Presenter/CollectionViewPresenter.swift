@@ -12,41 +12,34 @@ protocol CollectionViewPresenterProtocol  {
     func loadCollectionPhotos() async
     func loadMoreCollectionPhotos() async
     var view: CollectionViewControllerProtocol? { get set }
-    var collection: UserCollection? { get set }
-   
 }
+
 class CollectionViewPresenterImpl: CollectionViewPresenterProtocol {
     weak var view: (any CollectionViewControllerProtocol)?
     let networkService: NetworkService
-    var collection: UserCollection?
+    var collectionId: String
     var page: Int = 1
     var collectionPhotos: [UnsplashPhoto] = []
     var isLoading = false
     var hasMore = true
     
-    init(networkService: NetworkService) {
+    init(networkService: NetworkService, collectionId: String) {
         self.networkService = networkService
+        self.collectionId = collectionId
     }
     
     @MainActor
     func loadCollectionPhotos() async {
-        guard let collection else { return }
+        startLoading()
         
-        isLoading = true
-        view?.setLoadingState(true)
-        
-        defer {
-            isLoading = false
-            view?.setLoadingState(false)
-        }
+        defer { stopLoading() }
         
         do {
-            let collectionPhotos: [DetailPhoto] = try await networkService.fetchCollectionPhotos(for: collection.id, page: page)
+            let collectionPhotos: [DetailPhoto] = try await networkService.fetchCollectionPhotos(for: collectionId, page: page)
             let converted = convert(collectionPhotos)
-            let newUniquePhotos = converted.filter { newPhoto in
-                !self.collectionPhotos.contains { existingPhoto in existingPhoto.id == newPhoto.id }
-            }
+            let newUniquePhotos = filterUniquePhotos(converted)
             self.collectionPhotos.append(contentsOf: newUniquePhotos)
+            
             hasMore = !newUniquePhotos.isEmpty && collectionPhotos.count == 30
             
             if page > 1 {
@@ -63,22 +56,33 @@ class CollectionViewPresenterImpl: CollectionViewPresenterProtocol {
             view?.setErrorState(with: NetworkError.unknownError(error: error).description)
         }
     }
-
-
+    
+    
     func loadMoreCollectionPhotos() async {
         guard !isLoading, hasMore else { return }
         
-        isLoading = true
-        view?.setLoadingState(true)
+        startLoading()
         
-        defer {
-            isLoading = false
-            view?.setLoadingState(false)
-        }
+        defer { stopLoading() }
         
         await loadCollectionPhotos()
     }
     
+    private func filterUniquePhotos(_ photos: [UnsplashPhoto]) -> [UnsplashPhoto] {
+        return photos.filter { photo in
+            !self.collectionPhotos.contains { photo.id != $0.id }
+        }
+    }
+    
+    private func startLoading() {
+        isLoading = true
+        view?.setLoadingState(true)
+    }
+    
+    private func stopLoading() {
+        isLoading = false
+        view?.setLoadingState(false)
+    }
     private func convert(_ photos: [DetailPhoto]) -> [UnsplashPhoto] {
         return photos.compactMap { photo in
             let photoUrl = photo.urls

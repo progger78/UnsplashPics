@@ -8,13 +8,15 @@
 import Foundation
 
 fileprivate enum AccessKey: String {
-    case unsplash = "E1QH66FDUtJadMoLHMiNJiF1slF9ES_3pCipuYNA23M"
+    case unsplash = "eBW5tID8fSCIEp_8Tbk2-IeIKeH2AuVVVmv3_B38h8g"
 }
 
 enum UserInfoType: String {
     case user = ""
     case collections
     case photos
+    case followers
+    case following
 }
 
 enum LastRequestType {
@@ -122,10 +124,7 @@ final class NetworkServiceImpl: NetworkService, HTTPDataDownloader {
         guard var components = URLComponents(string: Constants.baseUrl.rawValue + path) else {
             throw NetworkError.invalidUrl
         }
-        
         components.queryItems = queryItems
-        
-        
         guard let url = components.url else { throw NetworkError.invalidUrl }
         
         print(url.absoluteString)

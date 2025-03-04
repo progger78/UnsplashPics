@@ -1,15 +1,15 @@
 //
-//  UserCollectionTableViewCell.swift
+//  UserTableViewCell.swift
 //  UnsplashPics
 //
-//  Created by 1 on 25.02.2025.
+//  Created by 1 on 03.03.2025.
 //
 
 import UIKit
 
-class UserCollectionTableViewCell: UITableViewCell {
-
-    static let reuseId = "UserCollectionTableViewCell"
+class UserTableViewCell: UITableViewCell {
+    static let reuseId = "UserTableViewCell"
+    
     let asyncImageView = AsyncImageView(cornerRadius: 15, hasBorderColor: false )
     let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -39,18 +39,19 @@ class UserCollectionTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with collection: UserCollection) {
-        let title = collection.title
-        let totalPhotos = "Всего фото: \(collection.totalPhotos)"
-        let lastUpdated = "Обновлена: \(collection.lastUpdated ?? "")"
-        Task { await asyncImageView.setImage(for: collection.coverPhoto.urls.small) }
+    func configure(with user: UserForPhoto) {
+        let title = user.name
+        let totalPhotos = "Всего фото: \(user.totalPhotos)"
+        let lastUpdated = "Локация: \(user.userLocation)"
+        let photoUrl = user.profileImage.medium
+        Task { await asyncImageView.setImage(for: photoUrl) }
         titleLabel.set(title)
         photosCountLabel.set(totalPhotos)
         lastUpdatedLabel.set(lastUpdated)
     }
 }
 
-private extension UserCollectionTableViewCell {
+private extension UserTableViewCell {
     func initialize() {
         configureView()
         embedViews()

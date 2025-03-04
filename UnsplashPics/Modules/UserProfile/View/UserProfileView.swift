@@ -9,26 +9,21 @@ import UIKit
 
 protocol UserProfileViewProtocol: AnyObject {
     func didTapReload()
+    func didTapFollowers()
+    func didTapFollowing()
 }
+
 class UserProfileView: UIView {
     
     weak var delegate: UserProfileViewProtocol?
     
-    enum State {
+    enum State<T>{
         case error(errorMessage: String)
         case loading(isLoading: Bool)
-        case normal(user: UserProfile)
+        case normal(data: T)
+        case empty
     }
     
-    let profileImageView = AsyncImageView(cornerRadius: 70, hasBorderColor: true)
-    let nameLabel = CustomLabel(type: .subtitle, numberOfLines: 1)
-    let iconImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(systemName: "mappin.and.ellipse"))
-        imageView.tintColor = .systemPink
-        return imageView
-    }()
-    let locationLabel = CustomLabel(type: .secondary, numberOfLines: 1)
-    let customStackView = CustomStackView()
     lazy var customTabBarVC: TabsPageViewController = {
         let tabVC = TabsPageViewController()
         tabVC.firstTabVC = userPhotosVC
@@ -36,6 +31,15 @@ class UserProfileView: UIView {
         return tabVC
     }()
     
+    private let profileImageView = AsyncImageView(cornerRadius: 70, hasBorderColor: true)
+    private let nameLabel = CustomLabel(type: .subtitle, numberOfLines: 1)
+    private let iconImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(systemName: "mappin.and.ellipse"))
+        imageView.tintColor = .systemPink
+        return imageView
+    }()
+    private let locationLabel = CustomLabel(type: .secondary, numberOfLines: 1)
+    private let customStackView = CustomStackView()
     private let userPhotosVC = UserPhotosViewController()
     private let userCollectionsVC = UserCollectionsViewController()
     private let stateView = StateView()
@@ -50,7 +54,7 @@ class UserProfileView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with user: UserProfile) {
+    private func configure(with user: UserProfile) {
         Task { await profileImageView.setImage(for: user.profileImage?.large ) }
         customStackView.set(with: user)
         nameLabel.set(user.name)
@@ -60,12 +64,12 @@ class UserProfileView: UIView {
         customTabBarVC.updateTitles(firstTab: totalPhotosTitle , secondTab: totalCollectionsTitle)
     }
     
-    func set(state: State) {
+    func set(state: State<UserProfile>) {
         switch state {
         case .error(let errorMessage):
             iconImageView.isHidden = true
             profileImageView.isHidden = true
-            bringSubviewToFront(stateView)
+            stateView.isHidden = true
             stateView.configure(for: .error(errorText: errorMessage))
         case .loading(let isLoading):
             if isLoading {
@@ -79,6 +83,33 @@ class UserProfileView: UIView {
             stateView.isHidden = true
             stateView.configure(for: .default)
             configure(with: user)
+        case .empty: break
+        }
+    }
+    
+    func configureCollectionsVC(with state: State<[UserCollection]>) {
+        switch state {
+        case .error(let errorMessage):
+            userCollectionsVC.set(state: .error(errorMessage: errorMessage))
+        case .loading(let isLoading):
+            userCollectionsVC.set(state: .loading(isLoading: isLoading))
+        case .normal(let collections):
+            userCollectionsVC.set(state: .normal(collections: collections))
+        case .empty:
+            userCollectionsVC.set(state: .empty)
+        }
+    }
+    
+    func configurePhotosVC(with state: State<[UnsplashPhoto]>) {
+        switch state {
+        case .error(let errorMessage):
+            userPhotosVC.set(state: .error(errorMessage: errorMessage))
+        case .loading(let isLoading):
+            userPhotosVC.set(state: .loading(isLoading: isLoading))
+        case .normal(let photos):
+            userPhotosVC.set(state: .normal(userPhotos: photos))
+        case .empty:
+            userPhotosVC.set(state: .empty)
         }
     }
     
@@ -88,16 +119,8 @@ class UserProfileView: UIView {
         self.delegate = delegate
     }
     
-    func loadInitiaPhotos(_ photos: [UnsplashPhoto]) {
-        userPhotosVC.update(with: photos)
-    }
-    
     func appendNewPhotos(_ photos: [UnsplashPhoto]) {
         userPhotosVC.append(photos)
-    }
-    
-    func loadInitialCollections(_ collections: [UserCollection]) {
-        userCollectionsVC.update(with: collections)
     }
     
     func appendNewCollections(_ collections: [UserCollection]) {
@@ -110,6 +133,16 @@ private extension UserProfileView {
         configureView()
         embedViews()
         configureConstraints()
+        customStackView.handleTap = { [weak self] action in
+            guard let self else { return }
+            
+            switch action {
+            case .followers:
+                delegate?.didTapFollowers()
+            case .following:
+                delegate?.didTapFollowing()
+            }
+        }
     }
     
     func configureView() {

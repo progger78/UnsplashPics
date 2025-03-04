@@ -14,4 +14,8 @@ extension Array {
         }
         append(element)
     }
+    
+    subscript(safe index: Int) -> Element? {
+        return self.indices.contains(index) ? self[index] : nil
+    }
 }
